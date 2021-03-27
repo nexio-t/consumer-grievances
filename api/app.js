@@ -2,17 +2,26 @@ const express = require('express')
 const app = express()
 const request = require("request"); 
 const port = 5000
+require('dotenv').config()
 
-app.get('/fetchConsumerComplaints', (req, res) => {
 
-    console.log("request is: ", req); 
-    res.redirect('https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/geo/states')
+app.get('/fetchConsumerComplaints/:state', (req, res) => {
 
-    // request('https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/geo/states/?state=MI', function(error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //         res.send(body); 
-    //     }
-    // })
+    console.log("req.params is: ", req.params); 
+
+    const { state } = req.params; 
+
+    res.redirect(`https://www.consumerfinance.gov/data-research/consumer-complaints/search/api/v1/geo/states/?${state}`)
+
+})
+
+app.get('/fetchRobocallComplaints/:state', (req, res) => {
+
+    console.log("req.params is: ", req.params); 
+
+    const { state } = req.params; 
+ 
+    res.redirect(`https://api.ftc.gov//v0/dnc-complaints?api_key=${process.env.API_KEY}&state="${state}"`)
 
 })
 
