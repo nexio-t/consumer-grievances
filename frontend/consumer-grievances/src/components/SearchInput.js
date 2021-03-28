@@ -1,8 +1,37 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line
 import React, { useState } from "react";
-import TextField from '@material-ui/core/TextField';
+import TextField from '@material-ui/core/TextField'; 
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import Container from "@material-ui/core/Container"
+import Button from "@material-ui/core/Button"
+import axios from 'axios'; 
+
+const searchState = async (inputValue) => {
+
+  console.log("searchState called");
+  console.log("inputValue is: ", inputValue); 
+  
+  try {
+
+    const fetchStateResults = await axios.get(`/fetchRobocallComplaints/${inputValue}`)
+
+    console.log("fetchStateResults is: ", fetchStateResults); 
+
+  } catch(err) {
+    console.log("request error is: ", err); 
+    throw new Error()
+  }
+
+  // axios.post(`http://localhost:3001/usuario/`).then((sucess)=>{
+  //     if(sucess){
+  //       alert("Usuário criado com Sucesso!")
+  //     }
+  //   }
+  // );
+
+}
+
 
 export default function SearchInput() {
 
@@ -13,11 +42,14 @@ const [inputValue, setInputValue] = React.useState('');
 const [options, setOptions] = React.useState([]);
 
 console.log("value is: ", value);  
+console.log("inputValue is: ", inputValue); 
 
 
   // To do: Add some kind of container 
   // To do: add button 
   return (
+    <Container component="main" maxWidth="xs">
+
     <Autocomplete
       id="combo-box-demo"
       options={fullStateNames}
@@ -35,6 +67,19 @@ console.log("value is: ", value);
         <TextField {...params} label="Combo box" variant="outlined" />
       )}
     />
+    <Button
+    type="entrarbutton"
+    fullWidth
+    variant="contained"
+    color="primary"
+    // className={classes.entrarbutton}
+    onClick={() => {
+      searchState(inputValue);
+    }}
+  > Search
+    </Button>
+        </Container>
+
   );
 }
 
