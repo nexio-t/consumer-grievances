@@ -4,20 +4,16 @@ import React, { useState } from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Box from "@material-ui/core/Box";
-import Container from "@material-ui/core/Container";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
-import SearchInput from '../components/SearchInput'; 
+import SearchInput from "../components/SearchInput";
+import Typography from "@material-ui/core/Typography";
+// import Container from '../containers/Container';
+import Container from '@material-ui/core/Container';
 
-const defaultProps = {
-  bgcolor: "background.paper",
-  m: 1,
-  style: { width: "5rem", height: "5rem" },
-  borderColor: "text.primary",
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -53,31 +49,34 @@ const searchState = async (inputValue) => {
   // );
 };
 
-
-
 export default function GridLayout() {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <Container maxWidth="md">
+          <div className={classes.root}>
       <Grid justify="center" container spacing={4}>
-        <Grid   item xs={8}>
-          
+        <Grid item xs={8}>
           <Paper className={classes.paper}>
-
-          <SearchInput searchState={searchState}  fullOptions={fullStateNames} />
-
+            <SearchInput
+              searchState={searchState}
+              fullOptions={fullStateNames}
+            />
           </Paper>
         </Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper}>
-
+            <Typography variant="h4" gutterBottom>
+              Consumer Complaints
+            </Typography>
           </Paper>
         </Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper}>
-            Robocalls
-            </Paper>
+            <Typography variant="h4" gutterBottom>
+              Robocalls
+            </Typography>
+          </Paper>
         </Grid>
         <Grid item xs={3}>
           <Paper className={classes.paper}>xs=3</Paper>
@@ -93,6 +92,9 @@ export default function GridLayout() {
         </Grid>
       </Grid>
     </div>
+
+    </Container>
+
 
     // <Container component="main" maxWidth="xs">
 
