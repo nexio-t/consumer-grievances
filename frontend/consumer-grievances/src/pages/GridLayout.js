@@ -17,9 +17,9 @@ import Container from '@material-ui/core/Container';
 
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
+  // root: {
+  //   flexGrow: 1,
+  // },
   paper: {
     padding: theme.spacing(2),
     textAlign: "center",
@@ -48,9 +48,8 @@ export default function GridLayout() {
   const classes = useStyles();
 
   return (
-    <Container maxWidth="md">
-          <div className={classes.root}>
-      <Grid justify="center" container spacing={4}>
+    <Container>
+         <Grid justify="center" container spacing={4}>
         <Grid item xs={8}>
           <Paper className={classes.paper}>
             <SearchInput
@@ -72,11 +71,11 @@ export default function GridLayout() {
               Robocalls
             </Typography>
 
-            <Grid container direction={'row'}>
-                <Grid xs={6}>
+            <Grid item container direction={'row'}>
+                <Grid xs={12} md={6}>
                   <DataCard title={"Total Calls"}/>
                 </Grid>
-                <Grid xs={6}>
+                <Grid xs={12} md={6}>
                   <DataCard title={"Calls / 1000"}/>
                 </Grid>
             </Grid>
@@ -99,14 +98,9 @@ export default function GridLayout() {
           <Paper className={classes.paper}>xs=3</Paper>
         </Grid>
       </Grid>
-    </div>
-
     </Container>
-
-
-    // <Container component="main" maxWidth="xs">
-
-    // </Container>
+   
+    
   );
 }
 
