@@ -10,6 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import SearchInput from "../components/SearchInput";
+import DataCard from '../components/DataCard'
 import Typography from "@material-ui/core/Typography";
 // import Container from '../containers/Container';
 import Container from '@material-ui/core/Container';
@@ -41,12 +42,6 @@ const searchState = async (inputValue) => {
     throw new Error();
   }
 
-  // axios.post(`http://localhost:3001/usuario/`).then((sucess)=>{
-  //     if(sucess){
-  //       alert("Usuário criado com Sucesso!")
-  //     }
-  //   }
-  // );
 };
 
 export default function GridLayout() {
@@ -71,11 +66,24 @@ export default function GridLayout() {
             </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid  item xs={12}>
           <Paper className={classes.paper}>
             <Typography variant="h4" gutterBottom>
               Robocalls
             </Typography>
+
+            <Grid container direction={'row'}>
+                <Grid xs={6}>
+                  <DataCard title={"Total Calls"}/>
+                </Grid>
+                <Grid xs={6}>
+                  <DataCard title={"Calls / 1000"}/>
+                </Grid>
+            </Grid>
+
+           
+            
+            
           </Paper>
         </Grid>
         <Grid item xs={3}>
