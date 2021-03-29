@@ -1,43 +1,38 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line
 import React, { useState } from "react";
+import Grid from "@material-ui/core/Grid";
 
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 
-export default function SearchInput({searchState, fullOptions}) {
+export default function SearchInput({ searchState, fullOptions }) {
+  const [inputValue, setInputValue] = React.useState("");
+  const [options, setOptions] = React.useState([]);
+  const [value, setValue] = React.useState(null);
 
-    const [inputValue, setInputValue] = React.useState("");
-    const [options, setOptions] = React.useState([]);
-    const [value, setValue] = React.useState(null);
+  const onChange = (event, newValue) => {
+    console.log("newValue is: ", newValue);
+    setOptions(newValue ? [newValue, ...options] : options);
+    setValue(newValue);
+  };
 
-
-    const onChange = (event, newValue) => {
-        console.log("newValue is: ", newValue);
-                    setOptions(newValue ? [newValue, ...options] : options);
-                    setValue(newValue);
-      
-      }
-      
-      const onInputChange = (event, newInputValue) => {
-        setInputValue(newInputValue);
-      }
-    
-
-    
+  const onInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue);
+  };
 
   return (
-    //   <div>
-    //       random
-    //   </div>
-
-    <div >
- <Autocomplete
+    <div>
+      {/* <Grid  justify="flex-start" alignItems="center" container spacing={4}> */}
+      {/* <Grid item xs={4}/> */}
+        <Grid item >
+          {" "}
+          <Autocomplete
+            fullWidth={true}
             id="combo-box-demo"
             options={fullOptions}
             getOptionLabel={(option) => option.full}
-            style={{ width: 300 }}
             onChange={(event, newValue) => {
               console.log("newValue is: ", newValue);
               setOptions(newValue ? [newValue, ...options] : options);
@@ -47,12 +42,16 @@ export default function SearchInput({searchState, fullOptions}) {
               setInputValue(newInputValue);
             }}
             renderInput={(params) => (
-              <TextField {...params} label="Combo box" variant="outlined" />
+              <TextField {...params} label="Select State" variant="outlined" />
             )}
           />
+        </Grid>
+        <Grid item >
+          {" "}
           <Button
+            //    fullWidth={true}
+               width="100%"
             type="entrarbutton"
-            fullWidth
             variant="contained"
             color="primary"
             // className={classes.entrarbutton}
@@ -63,35 +62,9 @@ export default function SearchInput({searchState, fullOptions}) {
             {" "}
             Search
           </Button>
-
-</div>
-    // <div >
-    //       <Autocomplete
-    //         id="combo-box-demo"
-    //         options={options}
-    //         getOptionLabel={(option) => option.full}
-    //         style={{ width: 300 }}
-    //         onChange={onChange()}
-    //         onInputChange={onInputChange()}
-    //         renderInput={(params) => (
-    //           <TextField {...params} label="Combo box" variant="outlined" />
-    //         )}
-    //       />
-    //       <Button
-    //         type="entrarbutton"
-    //         fullWidth
-    //         variant="contained"
-    //         color="primary"
-    //         // className={classes.entrarbutton}
-    //         onClick={() => {
-    //           searchState(inputValue);
-    //         }}
-    //       >
-    //         {" "}
-    //         Search
-    //       </Button>
-
-    // </div>
+        </Grid>
+        {/* <Grid item xs={4}/> */}
+      {/* </Grid> */}
+    </div>
   );
 }
-

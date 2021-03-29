@@ -60,18 +60,24 @@ export default function GridLayout() {
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={4}>
-        <Grid item xs={12}>
+      <Grid justify="center" container spacing={4}>
+        <Grid   item xs={8}>
           
+          <Paper className={classes.paper}>
+
           <SearchInput searchState={searchState}  fullOptions={fullStateNames} />
 
-          <Paper className={classes.paper}>xs=12</Paper>
+          </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper className={classes.paper}>xs=6</Paper>
+          <Paper className={classes.paper}>
+
+          </Paper>
         </Grid>
         <Grid item xs={6}>
-          <Paper className={classes.paper}>xs=6</Paper>
+          <Paper className={classes.paper}>
+            Robocalls
+            </Paper>
         </Grid>
         <Grid item xs={3}>
           <Paper className={classes.paper}>xs=3</Paper>
