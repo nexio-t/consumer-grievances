@@ -1,12 +1,12 @@
 import './App.css';
-import SearchInput from './components/SearchInput'; 
+import GridLayout from './pages/GridLayout'; 
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
 
-        <SearchInput/>
+        <GridLayout/>
       </header>
     </div>
   );
