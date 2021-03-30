@@ -39,7 +39,7 @@ export default function HideAppBar(props) {
       <HideOnScroll {...props}>
         <AppBar>
           <Toolbar>
-            <Typography variant="h6">Consumer Grievances</Typography>
+            <Typography variant="h6">Find out where your state stands</Typography>
           </Toolbar>
         </AppBar>
       </HideOnScroll>

@@ -10,14 +10,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import SearchInput from "../components/SearchInput";
-import DataCard from '../components/DataCard'
+import DataCard from "../components/DataCard";
 import Typography from "@material-ui/core/Typography";
 // import Container from '../containers/Container';
-import Container from '@material-ui/core/Container';
-import DataTable from '../components/DataTable';
-import HideAppBar from '../components/HideAppBar'; 
-import DenseAppBar from '../components/DenseAppBar'; 
-
+import Container from "@material-ui/core/Container";
+import DataTable from "../components/DataTable";
+import HideAppBar from "../components/HideAppBar";
+import DenseAppBar from "../components/DenseAppBar";
+import ConsumerGrievances from "../assets/ConsumerGrievances_copy.png";
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -29,35 +29,33 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    margin: '10px'
-
+    margin: '10px',
+  },
+  image: {
+    margin: '40px 30px 50px 30px',
+    maxWidth: '800px'
   }
 }));
 
-
 const prepRobocallData = async (data, meta, inputValue) => {
+  const totalCalls = meta["record-total"];
+  let statePopulation = null;
 
-    const totalCalls = meta['record-total']; 
-    let statePopulation = null; 
-    
-    await data.map(stateData => {
-      for (const x in stateData) {
-        if (x === 'State') {
-          if (stateData[x].toLowerCase() === inputValue.toLowerCase()) {
-            return statePopulation = stateData['Population']
-          }
+  await data.map((stateData) => {
+    for (const x in stateData) {
+      if (x === "State") {
+        if (stateData[x].toLowerCase() === inputValue.toLowerCase()) {
+          return (statePopulation = stateData["Population"]);
         }
-        }
-      
-     })
+      }
+    }
+  });
 
-     if (statePopulation !== null) {
-      const callsPerThousand = (totalCalls/(statePopulation / 1000)).toFixed(1)
-      return callsPerThousand; 
-     }
-
-}
-
+  if (statePopulation !== null) {
+    const callsPerThousand = (totalCalls / (statePopulation / 1000)).toFixed(1);
+    return callsPerThousand;
+  }
+};
 
 export default function GridLayout() {
   const classes = useStyles();
@@ -65,87 +63,109 @@ export default function GridLayout() {
   const searchState = async (inputValue) => {
     console.log("searchState called");
     console.log("inputValue is: ", inputValue);
-    setsearchedState(inputValue)
-  
+    setsearchedState(inputValue);
+
     try {
       const fetchRobocalls = await axios.get(
         `/fetchRobocallComplaints/${inputValue}`
       );
-      const fetchPopData = await axios.get(
-        '/fetchPopulationData'
-      );
+      const fetchPopData = await axios.get("/fetchPopulationData");
 
-      console.log("fetchConsumerComplaints")
+      console.log("fetchConsumerComplaints");
       // const fetchConsumerComplaints
-      let abbr = ''; 
-      const stateAbbr = fullStateNames.map(state => {
+      let abbr = "";
+      const stateAbbr = fullStateNames.map((state) => {
         for (const x in state) {
-          if (state[x] === inputValue) return abbr = state['abbr']
+          if (state[x] === inputValue) return (abbr = state["abbr"]);
         }
-      }); 
+      });
 
-      console.log("stateAbbr is: ", abbr); 
-      
+      console.log("stateAbbr is: ", abbr);
+
       const fetchConsumerComplaints = await axios.get(
         `/fetchConsumerComplaints/${abbr}`
       );
 
-      console.log("fetchConsumerComplaints", fetchConsumerComplaints); 
+      console.log("fetchConsumerComplaints", fetchConsumerComplaints);
 
-      const { data: { aggregations: { product: { product: { buckets } } } } } = fetchConsumerComplaints; 
-      const { data: { aggregations: { product: { doc_count } } }} = fetchConsumerComplaints; 
-      
-      console.log("buckets is: ", buckets); 
+      const {
+        data: {
+          aggregations: {
+            product: {
+              product: { buckets },
+            },
+          },
+        },
+      } = fetchConsumerComplaints;
+      const {
+        data: {
+          aggregations: {
+            product: { doc_count },
+          },
+        },
+      } = fetchConsumerComplaints;
+
+      console.log("buckets is: ", buckets);
       console.log("doc_count is: ", doc_count);
 
       if (doc_count && buckets) {
-        setcomplaintCategories(buckets); 
+        setcomplaintCategories(buckets);
         settotalComplaints(doc_count);
       }
-      
-      
 
+      if (fetchRobocalls["status"] === 200 && fetchPopData["status"] === 200) {
+        const {
+          data: { data },
+        } = fetchPopData;
+        const {
+          data: { meta },
+        } = fetchRobocalls;
 
-      if (fetchRobocalls['status'] === 200 && fetchPopData['status'] === 200) {
-        const { data: { data } } = fetchPopData; 
-        const { data: { meta } } = fetchRobocalls; 
-
-        const callsPerThousand = await prepRobocallData(data, meta, inputValue); 
-        const totalCalls = meta['record-total']; 
+        const callsPerThousand = await prepRobocallData(data, meta, inputValue);
+        const totalCalls = meta["record-total"];
 
         if (callsPerThousand && totalCalls) {
-          setcallsPer1000(callsPerThousand); 
-          settotalCalls(totalCalls); 
+          setcallsPer1000(callsPerThousand);
+          settotalCalls(totalCalls);
         }
-      
-
       }
 
-      console.log("fetchPopData is: ", fetchPopData); 
+      console.log("fetchPopData is: ", fetchPopData);
       console.log("fetchRobocalls is: ", fetchRobocalls);
     } catch (err) {
       console.log("request error is: ", err);
       throw new Error();
     }
-  
   };
 
-  const [searchedState, setsearchedState] = React.useState('');
-  const [callsPer1000, setcallsPer1000] = React.useState(0); 
+  const [searchedState, setsearchedState] = React.useState("");
+  const [callsPer1000, setcallsPer1000] = React.useState(0);
   const [totalCalls, settotalCalls] = React.useState(0);
-  const [totalComplaints, settotalComplaints] = React.useState([]);  
-  const [complaintCategories, setcomplaintCategories] = React.useState([]);  
+  const [totalComplaints, settotalComplaints] = React.useState([]);
+  const [complaintCategories, setcomplaintCategories] = React.useState([]);
 
-  console.log("totalComplaints is: ", totalComplaints); 
+  console.log("totalComplaints is: ", totalComplaints);
 
   return (
     <Container>
-        <HideAppBar></HideAppBar>
-        <Paper variant="outlined">
-          <img src="url" />
-        </Paper>
-         <Grid justify="center" container spacing={4}>
-        <Grid item xs={8}>
+      <HideAppBar></HideAppBar>
+
+      <Grid
+  container
+  spacing={0}
+  direction="column"
+  alignItems="center"
+  justify="center"
+  // style={{ minHeight: '100vh' }}
+>      
+<Paper justify="center" className={classes.image} variant="outlined">
+        <img  width={"100%"} src={ConsumerGrievances} />
+      </Paper>
+
+      </Grid>
+      
+      <Grid justify="center" container spacing={4}>
+        <Grid item xs={10} md={8} lg={6}>
           <Paper className={classes.paper}>
             <SearchInput
               searchState={searchState}
@@ -156,44 +176,38 @@ export default function GridLayout() {
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography variant="h5" gutterBottom>
-             {searchedState} Consumer Complaints
+              {searchedState} Consumer Complaints
             </Typography>
 
-            <Grid item container justify="center" spacing={2} direction={'row'}>
+            <Grid item container justify="center" spacing={2} direction={"row"}>
+              <Grid xs={12} md={6}>
+                <DataCard
+                  data={totalComplaints}
+                  m={2}
+                  title={"Total complaints"}
+                />
+              </Grid>
 
-            
-            <Grid xs={12} md={6}>
-                  <DataCard data={totalComplaints} m={2} title={"Total complaints"}/>
-                </Grid>
-
-                <Grid  xs={12} md={6}>
-            <DataTable data={complaintCategories}/>
+              <Grid xs={12} md={6}>
+                <DataTable data={complaintCategories} />
+              </Grid>
             </Grid>
-    
-            </Grid>
-
-
-            
           </Paper>
         </Grid>
-        <Grid  item xs={12}>
+        <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography variant="h5" gutterBottom>
               {searchedState} Robocalls
             </Typography>
 
-            <Grid item container spacing={2} direction={'row'}>
-                <Grid  xs={12} md={6}>
-                  <DataCard data={totalCalls} m={2} title={"Total calls"}/>
-                </Grid>
-                <Grid  xs={12} md={6}>
-                  <DataCard data={callsPer1000} title={"Calls / 1000"}/>
-                </Grid>
+            <Grid item container spacing={2} direction={"row"}>
+              <Grid xs={12} md={6}>
+                <DataCard data={totalCalls} m={2} title={"Total calls"} />
+              </Grid>
+              <Grid xs={12} md={6}>
+                <DataCard data={callsPer1000} title={"Calls / 1000"} />
+              </Grid>
             </Grid>
-
-           
-            
-            
           </Paper>
         </Grid>
         {/* <Grid item xs={3}>
@@ -210,8 +224,6 @@ export default function GridLayout() {
         </Grid> */}
       </Grid>
     </Container>
-   
-    
   );
 }
 
