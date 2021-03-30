@@ -14,6 +14,9 @@ import DataCard from '../components/DataCard'
 import Typography from "@material-ui/core/Typography";
 // import Container from '../containers/Container';
 import Container from '@material-ui/core/Container';
+import DataTable from '../components/DataTable';
+import HideAppBar from '../components/HideAppBar'; 
+import DenseAppBar from '../components/DenseAppBar'; 
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,54 +37,30 @@ const useStyles = makeStyles((theme) => ({
 
 const prepRobocallData = async (data, meta, inputValue) => {
 
-    console.log("prepRoboCall data is: ", data); 
-    console.log("prepRobocall meta is: ", meta); 
-
     const totalCalls = meta['record-total']; 
-    console.log("totalCalls is: ", totalCalls); 
     let statePopulation = null; 
-
-    console.log("inputValue55 is: ", inputValue); 
     
     await data.map(stateData => {
-
-      console.log("stateData is: ", stateData); 
-
       for (const x in stateData) {
-        console.log("x is: ", x);
-        console.log("stateData[x] is: ", stateData[x]); 
         if (x === 'State') {
-          console.log("stateData[x].toLowerCase() is: ", stateData[x].toLowerCase()); 
           if (stateData[x].toLowerCase() === inputValue.toLowerCase()) {
-            console.log('the state matches!'); 
             return statePopulation = stateData['Population']
           }
         }
-
         }
       
      })
 
      if (statePopulation !== null) {
-
-      console.log("statePOP is: ", statePopulation); 
-
       const callsPerThousand = (totalCalls/(statePopulation / 1000)).toFixed(1)
-      console.log("callsPerThousand is: ", callsPerThousand); 
-
-      console.log("typeof callsPerthousand", typeof callsPerThousand); 
       return callsPerThousand; 
      }
-
-    // map over data
 
 }
 
 
 export default function GridLayout() {
   const classes = useStyles();
-
-
 
   const searchState = async (inputValue) => {
     console.log("searchState called");
@@ -95,6 +74,37 @@ export default function GridLayout() {
       const fetchPopData = await axios.get(
         '/fetchPopulationData'
       );
+
+      console.log("fetchConsumerComplaints")
+      // const fetchConsumerComplaints
+      let abbr = ''; 
+      const stateAbbr = fullStateNames.map(state => {
+        for (const x in state) {
+          if (state[x] === inputValue) return abbr = state['abbr']
+        }
+      }); 
+
+      console.log("stateAbbr is: ", abbr); 
+      
+      const fetchConsumerComplaints = await axios.get(
+        `/fetchConsumerComplaints/${abbr}`
+      );
+
+      console.log("fetchConsumerComplaints", fetchConsumerComplaints); 
+
+      const { data: { aggregations: { product: { product: { buckets } } } } } = fetchConsumerComplaints; 
+      const { data: { aggregations: { product: { doc_count } } }} = fetchConsumerComplaints; 
+      
+      console.log("buckets is: ", buckets); 
+      console.log("doc_count is: ", doc_count);
+
+      if (doc_count && buckets) {
+        setcomplaintCategories(buckets); 
+        settotalComplaints(doc_count);
+      }
+      
+      
+
 
       if (fetchRobocalls['status'] === 200 && fetchPopData['status'] === 200) {
         const { data: { data } } = fetchPopData; 
@@ -122,11 +132,18 @@ export default function GridLayout() {
 
   const [searchedState, setsearchedState] = React.useState('');
   const [callsPer1000, setcallsPer1000] = React.useState(0); 
-  const [totalCalls, settotalCalls] = React.useState(0); 
+  const [totalCalls, settotalCalls] = React.useState(0);
+  const [totalComplaints, settotalComplaints] = React.useState([]);  
+  const [complaintCategories, setcomplaintCategories] = React.useState([]);  
 
+  console.log("totalComplaints is: ", totalComplaints); 
 
   return (
     <Container>
+        <HideAppBar></HideAppBar>
+        <Paper variant="outlined">
+          <img src="url" />
+        </Paper>
          <Grid justify="center" container spacing={4}>
         <Grid item xs={8}>
           <Paper className={classes.paper}>
@@ -136,11 +153,27 @@ export default function GridLayout() {
             />
           </Paper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12}>
           <Paper className={classes.paper}>
             <Typography variant="h5" gutterBottom>
              {searchedState} Consumer Complaints
             </Typography>
+
+            <Grid item container justify="center" spacing={2} direction={'row'}>
+
+            
+            <Grid xs={12} md={6}>
+                  <DataCard data={totalComplaints} m={2} title={"Total complaints"}/>
+                </Grid>
+
+                <Grid  xs={12} md={6}>
+            <DataTable data={complaintCategories}/>
+            </Grid>
+    
+            </Grid>
+
+
+            
           </Paper>
         </Grid>
         <Grid  item xs={12}>
@@ -163,7 +196,7 @@ export default function GridLayout() {
             
           </Paper>
         </Grid>
-        <Grid item xs={3}>
+        {/* <Grid item xs={3}>
           <Paper className={classes.paper}>xs=3</Paper>
         </Grid>
         <Grid item xs={3}>
@@ -174,7 +207,7 @@ export default function GridLayout() {
         </Grid>
         <Grid item xs={3}>
           <Paper className={classes.paper}>xs=3</Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Container>
    
@@ -184,60 +217,60 @@ export default function GridLayout() {
 
 //
 const fullStateNames = [
-  { name: "AK", full: "Alaska" },
-  { name: "AL", full: "Alabama" },
-  { name: "AR", full: "Arkansas" },
-  { name: "AZ", full: "Arizona" },
-  { name: "CA", full: "California" },
-  { name: "CO", full: "Colorado" },
-  { name: "CT", full: "Connecticut" },
-  { name: "DC", full: "Washington D.C." },
-  { name: "DE", full: "Delaware" },
-  { name: "FL", full: "Florida" },
-  { name: "GA", full: "Georgia" },
-  { name: "HI", full: "Hawaii" },
-  { name: "IA", full: "Iowa" },
-  { name: "ID", full: "Idaho" },
-  { name: "IL", full: "Illinois" },
-  { name: "IN", full: "Indiana" },
-  { name: "KS", full: "Kansas" },
-  { name: "KY", full: "Kentucky" },
-  { name: "LA", full: "Louisiana" },
-  { name: "MA", full: "Massachusetts" },
-  { name: "MD", full: "Maryland" },
-  { name: "ME", full: "Maine" },
-  { name: "MI", full: "Michigan" },
-  { name: "MN", full: "Minnesota" },
-  { name: "MO", full: "Missouri" },
-  { name: "MS", full: "Mississippi" },
-  { name: "MT", full: "Montana" },
-  { name: "NC", full: "North Carolina" },
-  { name: "ND", full: "North Dakota" },
-  { name: "NE", full: "Nebraska" },
-  { name: "NH", full: "New Hampshire" },
-  { name: "NJ", full: "New Jersey" },
-  { name: "NM", full: "New Mexico" },
-  { name: "NV", full: "Nevada" },
-  { name: "NY", full: "New York" },
-  { name: "OH", full: "Ohio" },
-  { name: "OK", full: "Oklahoma" },
-  { name: "OR", full: "Oregon" },
-  { name: "PA", full: "Pennsylvania" },
-  { name: "RI", full: "Rhode Island" },
-  { name: "SC", full: "South Carolina" },
-  { name: "SD", full: "South Dakota" },
-  { name: "TN", full: "Tennessee" },
-  { name: "TX", full: "Texas" },
-  { name: "UT", full: "Utah" },
-  { name: "VA", full: "Virginia" },
-  { name: "VT", full: "Vermont" },
-  { name: "WA", full: "Washington" },
-  { name: "WI", full: "Wisconsin" },
-  { name: "WV", full: "West Virginia" },
-  { name: "WY", full: "Wyoming" },
-  { name: "PR", full: "Puerto Rico" },
-  { name: "AS", full: "American Samoa" },
-  { name: "GU", full: "Guam" },
-  { name: "MP", full: "Northern Mariana Islands" },
-  { name: "VI", full: "U.S. Virgin Islands" },
+  { abbr: "AK", full: "Alaska" },
+  { abbr: "AL", full: "Alabama" },
+  { abbr: "AR", full: "Arkansas" },
+  { abbr: "AZ", full: "Arizona" },
+  { abbr: "CA", full: "California" },
+  { abbr: "CO", full: "Colorado" },
+  { abbr: "CT", full: "Connecticut" },
+  { abbr: "DC", full: "Washington D.C." },
+  { abbr: "DE", full: "Delaware" },
+  { abbr: "FL", full: "Florida" },
+  { abbr: "GA", full: "Georgia" },
+  { abbr: "HI", full: "Hawaii" },
+  { abbr: "IA", full: "Iowa" },
+  { abbr: "ID", full: "Idaho" },
+  { abbr: "IL", full: "Illinois" },
+  { abbr: "IN", full: "Indiana" },
+  { abbr: "KS", full: "Kansas" },
+  { abbr: "KY", full: "Kentucky" },
+  { abbr: "LA", full: "Louisiana" },
+  { abbr: "MA", full: "Massachusetts" },
+  { abbr: "MD", full: "Maryland" },
+  { abbr: "ME", full: "Maine" },
+  { abbr: "MI", full: "Michigan" },
+  { abbr: "MN", full: "Minnesota" },
+  { abbr: "MO", full: "Missouri" },
+  { abbr: "MS", full: "Mississippi" },
+  { abbr: "MT", full: "Montana" },
+  { abbr: "NC", full: "North Carolina" },
+  { abbr: "ND", full: "North Dakota" },
+  { abbr: "NE", full: "Nebraska" },
+  { abbr: "NH", full: "New Hampshire" },
+  { abbr: "NJ", full: "New Jersey" },
+  { abbr: "NM", full: "New Mexico" },
+  { abbr: "NV", full: "Nevada" },
+  { abbr: "NY", full: "New York" },
+  { abbr: "OH", full: "Ohio" },
+  { abbr: "OK", full: "Oklahoma" },
+  { abbr: "OR", full: "Oregon" },
+  { abbr: "PA", full: "Pennsylvania" },
+  { abbr: "RI", full: "Rhode Island" },
+  { abbr: "SC", full: "South Carolina" },
+  { abbr: "SD", full: "South Dakota" },
+  { abbr: "TN", full: "Tennessee" },
+  { abbr: "TX", full: "Texas" },
+  { abbr: "UT", full: "Utah" },
+  { abbr: "VA", full: "Virginia" },
+  { abbr: "VT", full: "Vermont" },
+  { abbr: "WA", full: "Washington" },
+  { abbr: "WI", full: "Wisconsin" },
+  { abbr: "WV", full: "West Virginia" },
+  { abbr: "WY", full: "Wyoming" },
+  { abbr: "PR", full: "Puerto Rico" },
+  { abbr: "AS", full: "American Samoa" },
+  { abbr: "GU", full: "Guam" },
+  { abbr: "MP", full: "Northern Mariana Islands" },
+  { abbr: "VI", full: "U.S. Virgin Islands" },
 ];
