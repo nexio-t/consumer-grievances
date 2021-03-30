@@ -18,6 +18,7 @@ import DataTable from "../components/DataTable";
 import HideAppBar from "../components/HideAppBar";
 import DenseAppBar from "../components/DenseAppBar";
 import ConsumerGrievances from "../assets/ConsumerGrievances_copy.png";
+import LoadingBar from "../components/LoadingBar";
 
 const useStyles = makeStyles((theme) => ({
   // root: {
@@ -29,12 +30,12 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
   },
   card: {
-    margin: '10px',
+    margin: "10px",
   },
   image: {
-    margin: '40px 30px 50px 30px',
-    maxWidth: '800px'
-  }
+    margin: "40px 30px 50px 30px",
+    maxWidth: "800px",
+  },
 }));
 
 const prepRobocallData = async (data, meta, inputValue) => {
@@ -57,10 +58,67 @@ const prepRobocallData = async (data, meta, inputValue) => {
   }
 };
 
+const renderContent = (loading, searchedState, totalComplaints, complaintCategories, totalCalls, callsPer1000, classes) => {
+
+  console.log("renderContent loading variable is: ", loading); 
+  if (loading) {
+    return <Grid item xs={10} md={8} lg={6}>
+    <LoadingBar></LoadingBar>
+  </Grid> 
+  }
+    
+  return <div>
+  <Grid item xs={12}>
+<Paper className={classes.paper}>
+  <Typography variant="h5" gutterBottom>
+    {searchedState} Consumer Complaints
+  </Typography>
+
+  <Grid item container justify="center" spacing={2} direction={"row"}>
+    <Grid xs={12} md={6}>
+      <DataCard
+        data={totalComplaints}
+        m={2}
+        title={"Total complaints"}
+      />
+    </Grid>
+
+    <Grid xs={12} md={6}>
+      <DataTable data={complaintCategories} />
+    </Grid>
+  </Grid>
+</Paper>
+</Grid>
+<Grid item xs={12}>
+<Paper className={classes.paper}>
+  <Typography variant="h5" gutterBottom>
+    {searchedState} Robocalls
+  </Typography>
+
+  <Grid item container spacing={2} direction={"row"}>
+    <Grid xs={12} md={6}>
+      <DataCard data={totalCalls} m={2} title={"Total calls"} />
+    </Grid>
+    <Grid xs={12} md={6}>
+      <DataCard data={callsPer1000} title={"Calls / 1000"} />
+    </Grid>
+  </Grid>
+</Paper>
+</Grid>
+
+</div> 
+
+
+
+
+}
+
 export default function GridLayout() {
   const classes = useStyles();
 
   const searchState = async (inputValue) => {
+
+    setLoading(true); 
     console.log("searchState called");
     console.log("inputValue is: ", inputValue);
     setsearchedState(inputValue);
@@ -88,30 +146,41 @@ export default function GridLayout() {
 
       console.log("fetchConsumerComplaints", fetchConsumerComplaints);
 
-      const {
-        data: {
-          aggregations: {
-            product: {
-              product: { buckets },
+      if (fetchConsumerComplaints['status'] ===200) {
+
+        const {
+          data: {
+            aggregations: {
+              product: {
+                product: { buckets },
+              },
             },
           },
-        },
-      } = fetchConsumerComplaints;
-      const {
-        data: {
-          aggregations: {
-            product: { doc_count },
+        } = fetchConsumerComplaints;
+        const {
+          data: {
+            aggregations: {
+              product: { doc_count },
+            },
           },
-        },
-      } = fetchConsumerComplaints;
+        } = fetchConsumerComplaints;
+  
+        console.log("buckets is: ", buckets);
+        console.log("doc_count is: ", doc_count);
+  
+        if (doc_count && buckets) {
+          setcomplaintCategories(buckets);
+          settotalComplaints(doc_count);
+          setLoading(false)
+        } else {
 
-      console.log("buckets is: ", buckets);
-      console.log("doc_count is: ", doc_count);
+          setLoading(false)
+          console.log("no data to display for fetchConsumer complaints"); 
+        }
 
-      if (doc_count && buckets) {
-        setcomplaintCategories(buckets);
-        settotalComplaints(doc_count);
       }
+
+     
 
       if (fetchRobocalls["status"] === 200 && fetchPopData["status"] === 200) {
         const {
@@ -127,7 +196,12 @@ export default function GridLayout() {
         if (callsPerThousand && totalCalls) {
           setcallsPer1000(callsPerThousand);
           settotalCalls(totalCalls);
+          setLoading(false); 
         }
+      } else {
+
+        setLoading(false)
+        console.log("no data to display for robocalls"); 
       }
 
       console.log("fetchPopData is: ", fetchPopData);
@@ -138,32 +212,33 @@ export default function GridLayout() {
     }
   };
 
-  const [searchedState, setsearchedState] = React.useState("");
+  const [searchedState, setsearchedState] = React.useState('');
   const [callsPer1000, setcallsPer1000] = React.useState(0);
   const [totalCalls, settotalCalls] = React.useState(0);
   const [totalComplaints, settotalComplaints] = React.useState([]);
   const [complaintCategories, setcomplaintCategories] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   console.log("totalComplaints is: ", totalComplaints);
+  console.log("searchedState is: ", searchedState); 
 
   return (
     <Container>
       <HideAppBar></HideAppBar>
 
       <Grid
-  container
-  spacing={0}
-  direction="column"
-  alignItems="center"
-  justify="center"
-  // style={{ minHeight: '100vh' }}
->      
-<Paper justify="center" className={classes.image} variant="outlined">
-        <img  width={"100%"} src={ConsumerGrievances} />
-      </Paper>
-
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justify="center"
+        // style={{ minHeight: '100vh' }}
+      >
+        <Paper justify="center" className={classes.image} variant="outlined">
+          <img width={"100%"} src={ConsumerGrievances} />
+        </Paper>
       </Grid>
-      
+
       <Grid justify="center" container spacing={4}>
         <Grid item xs={10} md={8} lg={6}>
           <Paper className={classes.paper}>
@@ -173,43 +248,13 @@ export default function GridLayout() {
             />
           </Paper>
         </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography variant="h5" gutterBottom>
-              {searchedState} Consumer Complaints
-            </Typography>
+        {/* {console.log("searchedState render is; ", searchedState)} */}
+        { searchedState ? renderContent(loading, searchedState, totalComplaints, complaintCategories, totalCalls, callsPer1000, classes) : null}
+        {/* {renderContent(loading)} */}
 
-            <Grid item container justify="center" spacing={2} direction={"row"}>
-              <Grid xs={12} md={6}>
-                <DataCard
-                  data={totalComplaints}
-                  m={2}
-                  title={"Total complaints"}
-                />
-              </Grid>
+        
 
-              <Grid xs={12} md={6}>
-                <DataTable data={complaintCategories} />
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
-          <Paper className={classes.paper}>
-            <Typography variant="h5" gutterBottom>
-              {searchedState} Robocalls
-            </Typography>
-
-            <Grid item container spacing={2} direction={"row"}>
-              <Grid xs={12} md={6}>
-                <DataCard data={totalCalls} m={2} title={"Total calls"} />
-              </Grid>
-              <Grid xs={12} md={6}>
-                <DataCard data={callsPer1000} title={"Calls / 1000"} />
-              </Grid>
-            </Grid>
-          </Paper>
-        </Grid>
+       
         {/* <Grid item xs={3}>
           <Paper className={classes.paper}>xs=3</Paper>
         </Grid>
