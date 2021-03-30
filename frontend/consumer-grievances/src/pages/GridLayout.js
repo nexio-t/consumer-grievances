@@ -25,27 +25,105 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     color: theme.palette.text.secondary,
   },
+  card: {
+    margin: '10px'
+
+  }
 }));
 
-const searchState = async (inputValue) => {
-  console.log("searchState called");
-  console.log("inputValue is: ", inputValue);
 
-  try {
-    const fetchStateResults = await axios.get(
-      `/fetchRobocallComplaints/${inputValue}`
-    );
+const prepRobocallData = async (data, meta, inputValue) => {
 
-    console.log("fetchStateResults is: ", fetchStateResults);
-  } catch (err) {
-    console.log("request error is: ", err);
-    throw new Error();
-  }
+    console.log("prepRoboCall data is: ", data); 
+    console.log("prepRobocall meta is: ", meta); 
 
-};
+    const totalCalls = meta['record-total']; 
+    console.log("totalCalls is: ", totalCalls); 
+    let statePopulation = null; 
+
+    console.log("inputValue55 is: ", inputValue); 
+    
+    await data.map(stateData => {
+
+      console.log("stateData is: ", stateData); 
+
+      for (const x in stateData) {
+        console.log("x is: ", x);
+        console.log("stateData[x] is: ", stateData[x]); 
+        if (x === 'State') {
+          console.log("stateData[x].toLowerCase() is: ", stateData[x].toLowerCase()); 
+          if (stateData[x].toLowerCase() === inputValue.toLowerCase()) {
+            console.log('the state matches!'); 
+            return statePopulation = stateData['Population']
+          }
+        }
+
+        }
+      
+     })
+
+     if (statePopulation !== null) {
+
+      console.log("statePOP is: ", statePopulation); 
+
+      const callsPerThousand = (totalCalls/(statePopulation / 1000)).toFixed(1)
+      console.log("callsPerThousand is: ", callsPerThousand); 
+
+      console.log("typeof callsPerthousand", typeof callsPerThousand); 
+      return callsPerThousand; 
+     }
+
+    // map over data
+
+}
+
 
 export default function GridLayout() {
   const classes = useStyles();
+
+
+
+  const searchState = async (inputValue) => {
+    console.log("searchState called");
+    console.log("inputValue is: ", inputValue);
+    setsearchedState(inputValue)
+  
+    try {
+      const fetchRobocalls = await axios.get(
+        `/fetchRobocallComplaints/${inputValue}`
+      );
+      const fetchPopData = await axios.get(
+        '/fetchPopulationData'
+      );
+
+      if (fetchRobocalls['status'] === 200 && fetchPopData['status'] === 200) {
+        const { data: { data } } = fetchPopData; 
+        const { data: { meta } } = fetchRobocalls; 
+
+        const callsPerThousand = await prepRobocallData(data, meta, inputValue); 
+        const totalCalls = meta['record-total']; 
+
+        if (callsPerThousand && totalCalls) {
+          setcallsPer1000(callsPerThousand); 
+          settotalCalls(totalCalls); 
+        }
+      
+
+      }
+
+      console.log("fetchPopData is: ", fetchPopData); 
+      console.log("fetchRobocalls is: ", fetchRobocalls);
+    } catch (err) {
+      console.log("request error is: ", err);
+      throw new Error();
+    }
+  
+  };
+
+  const [searchedState, setsearchedState] = React.useState('');
+  const [callsPer1000, setcallsPer1000] = React.useState(0); 
+  const [totalCalls, settotalCalls] = React.useState(0); 
+
 
   return (
     <Container>
@@ -60,23 +138,23 @@ export default function GridLayout() {
         </Grid>
         <Grid item xs={6}>
           <Paper className={classes.paper}>
-            <Typography variant="h4" gutterBottom>
-              Consumer Complaints
+            <Typography variant="h5" gutterBottom>
+             {searchedState} Consumer Complaints
             </Typography>
           </Paper>
         </Grid>
         <Grid  item xs={12}>
           <Paper className={classes.paper}>
-            <Typography variant="h4" gutterBottom>
-              Robocalls
+            <Typography variant="h5" gutterBottom>
+              {searchedState} Robocalls
             </Typography>
 
-            <Grid item container direction={'row'}>
-                <Grid xs={12} md={6}>
-                  <DataCard title={"Total Calls"}/>
+            <Grid item container spacing={2} direction={'row'}>
+                <Grid  xs={12} md={6}>
+                  <DataCard data={totalCalls} m={2} title={"Total calls"}/>
                 </Grid>
-                <Grid xs={12} md={6}>
-                  <DataCard title={"Calls / 1000"}/>
+                <Grid  xs={12} md={6}>
+                  <DataCard data={callsPer1000} title={"Calls / 1000"}/>
                 </Grid>
             </Grid>
 

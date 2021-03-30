@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+    margin: '10px'
   },
   bullet: {
     display: 'inline-block',
@@ -23,30 +24,27 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataCard({title}) {
+export default function DataCard({title, state, data}) {
+  
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
+  let displayData = data 
+
+  if (data > 999) displayData = data.toLocaleString()
 
   return (
-    <Card className={classes.root}>
+    <Card variant="outlined" className={classes.root}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
-          Word of the Day
-        </Typography>
-        <Typography variant="h5" component="h2">
-          {title}
+          {state}
         </Typography>
 
         <Typography variant="h5" component="h2">
           {title}
         </Typography>
         <Typography className={classes.pos} color="textSecondary">
-          adjective
         </Typography>
-        <Typography variant="body2" component="p">
-          well meaning and kindly.
-          <br />
-          {'"a benevolent smile"'}
+        <Typography variant="h3" component="p">
+          {displayData}
         </Typography>
       </CardContent>
       
