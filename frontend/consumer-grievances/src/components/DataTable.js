@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -8,25 +8,32 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    backgroundColor: theme.palette.action.selected,
+    color: theme.palette.common.black,
+  },
+  body: {
+    fontSize: 14,
+  },
+}))(TableCell);
+
+const StyledTableRow = withStyles((theme) => ({
+  root: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.action.hover,
+    },
+  },
+}))(TableRow);
+
 const useStyles = makeStyles({
-//   table: {
-//     minWidth: 650,
-//   },
+  table: {
+    margin: '10px',
+  },
 });
 
-// function createData(name, calories, fat, carbs, protein) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData('Frozen yoghurt', 159),
-//   createData('Ice cream sandwich', 237),
-//   createData('Eclair', 262),
-//   createData('Cupcake', 305 ),
-//   createData('Gingerbread', 356),
-// ];
-
 export default function DataTable({data}) {
+
 
 
   console.log("DataTables data is: ", data); 
@@ -47,8 +54,8 @@ export default function DataTable({data}) {
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
-            <TableCell>Complaint Category</TableCell>
-            <TableCell align="right">Total</TableCell>
+            <StyledTableCell>Complaint Category</StyledTableCell>
+            <StyledTableCell align="right">Total</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>

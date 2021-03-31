@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
+    minHeight: 237,
     margin: '10px'
   },
   bullet: {
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataCard({title, state, data}) {
+export default function DataCard({title, subtitle, state, data}) {
   
   const classes = useStyles();
   let displayData = data 
@@ -41,6 +42,12 @@ export default function DataCard({title, state, data}) {
         <Typography variant="h5" component="h2">
           {title}
         </Typography>
+
+        <Typography variant="body1" component="h2">
+          {subtitle}
+        </Typography>
+
+        
         <Typography className={classes.pos} color="textSecondary">
         </Typography>
         <Typography variant="h3" component="p">
