@@ -117,7 +117,7 @@ const renderContent = (loading, searchedState, totalComplaints, complaintCategor
       <DataCard data={totalCalls} m={2} subtitle={"in 2020"} title={"Total complaints"} />
     </Grid>
     <Grid xs={12} md={6}>
-      <DataCard data={callsPer1000} subtitle={"per thousand inhabitants"} title={"Complaints / 1000"} />
+      <DataCard data={callsPer1000} subtitle={"per thousand inhabitants in 2020"} title={"Complaints / 1000"} />
     </Grid>
   </Grid>
 </Paper>
@@ -264,6 +264,8 @@ export default function GridLayout() {
   const [totalComplaints, settotalComplaints] = React.useState([]);
   const [complaintCategories, setcomplaintCategories] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const [errorMsg, setErrorMsg] = React.useState('');
 
 
   return (
