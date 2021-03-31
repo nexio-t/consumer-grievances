@@ -1,145 +1,75 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line
 import React, { useState } from "react";
-import TextField from '@material-ui/core/TextField'; 
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import Container from "@material-ui/core/Container"
-import Button from "@material-ui/core/Button"
-import axios from 'axios'; 
+import Grid from "@material-ui/core/Grid";
+import { makeStyles } from "@material-ui/core/styles";
 
-const searchState = async (inputValue) => {
+import TextField from "@material-ui/core/TextField";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import Button from "@material-ui/core/Button";
 
-  console.log("searchState called");
-  console.log("inputValue is: ", inputValue); 
-  
-  try {
+const useStyles = makeStyles((theme) => ({
+  button: {
+    padding: "10px",
+  },
+}));
 
-    const fetchStateResults = await axios.get(`/fetchRobocallComplaints/${inputValue}`)
+export default function SearchInput({ searchState, fullOptions }) {
+  const [inputValue, setInputValue] = React.useState("");
+  const [options, setOptions] = React.useState([]);
+  const [value, setValue] = React.useState(null);
 
-    console.log("fetchStateResults is: ", fetchStateResults); 
+  const onChange = (event, newValue) => {
+    console.log("newValue is: ", newValue);
+    setOptions(newValue ? [newValue, ...options] : options);
+    setValue(newValue);
+  };
 
-  } catch(err) {
-    console.log("request error is: ", err); 
-    throw new Error()
-  }
+  const onInputChange = (event, newInputValue) => {
+    setInputValue(newInputValue);
+  };
 
-  // axios.post(`http://localhost:3001/usuario/`).then((sucess)=>{
-  //     if(sucess){
-  //       alert("Usuário criado com Sucesso!")
-  //     }
-  //   }
-  // );
+  const classes = useStyles();
 
-}
-
-
-export default function SearchInput() {
-
-// https://material-ui.com/components/autocomplete/
-
-const [value, setValue] = React.useState(null);
-const [inputValue, setInputValue] = React.useState('');
-const [options, setOptions] = React.useState([]);
-
-console.log("value is: ", value);  
-console.log("inputValue is: ", inputValue); 
-
-
-  // To do: Add some kind of container 
-  // To do: add button 
   return (
-    <Container component="main" maxWidth="xs">
-
-    <Autocomplete
-      id="combo-box-demo"
-      options={fullStateNames}
-      getOptionLabel={(option) => option.full}
-      style={{ width: 300 }}
-      onChange={(event, newValue) => {
-        console.log("newValue is: ", newValue); 
-        setOptions(newValue ? [newValue, ...options] : options);
-        setValue(newValue);
-      }}
-      onInputChange={(event, newInputValue) => {
-        setInputValue(newInputValue);
-      }}
-      renderInput={(params) => (
-        <TextField {...params} label="Combo box" variant="outlined" />
-      )}
-    />
-    <Button
-    type="entrarbutton"
-    fullWidth
-    variant="contained"
-    color="primary"
-    // className={classes.entrarbutton}
-    onClick={() => {
-      searchState(inputValue);
-    }}
-  > Search
-    </Button>
-        </Container>
-
+    <div className={classes}>
+      <Grid margin={2}>
+        {" "}
+        <Autocomplete
+          fullWidth={true}
+          id="combo-box-demo"
+          options={fullOptions}
+          getOptionLabel={(option) => option.full}
+          onChange={(event, newValue) => {
+            console.log("newValue is: ", newValue);
+            setOptions(newValue ? [newValue, ...options] : options);
+            setValue(newValue);
+          }}
+          onInputChange={(event, newInputValue) => {
+            setInputValue(newInputValue);
+          }}
+          renderInput={(params) => (
+            <TextField {...params} label="Select State" variant="outlined" />
+          )}
+        />
+      </Grid>
+      <Grid margin={2}>
+        {" "}
+        <div className={classes.button}>
+          <Button
+            width="100%"
+            type="entrarbutton"
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              searchState(inputValue);
+            }}
+          >
+            {" "}
+            Search
+          </Button>
+        </div>
+      </Grid>
+    </div>
   );
 }
-
-//
-const fullStateNames = [
-    { name: "AK", full: "Alaska" },
-    { name: "AL", full: "Alabama" },
-    { name: "AR", full: "Arkansas" },
-    { name: "AZ", full: "Arizona" },
-    { name: "CA", full: "California" },
-    { name: "CO", full: "Colorado" },
-    { name: "CT", full: "Connecticut" },
-    { name: "DC", full: "Washington D.C." },
-    { name: "DE", full: "Delaware" },
-    { name: "FL", full: "Florida" },
-    { name: "GA", full: "Georgia" },
-    { name: "HI", full: "Hawaii" },
-    { name: "IA", full: "Iowa" },
-    { name: "ID", full: "Idaho" },
-    { name: "IL", full: "Illinois" },
-    { name: "IN", full: "Indiana" },
-    { name: "KS", full: "Kansas" },
-    { name: "KY", full: "Kentucky" },
-    { name: "LA", full: "Louisiana" },
-    { name: "MA", full: "Massachusetts" },
-    { name: "MD", full: "Maryland" },
-    { name: "ME", full: "Maine" },
-    { name: "MI", full: "Michigan" },
-    { name: "MN", full: "Minnesota" },
-    { name: "MO", full: "Missouri" },
-    { name: "MS", full: "Mississippi" },
-    { name: "MT", full: "Montana" },
-    { name: "NC", full: "North Carolina" },
-    { name: "ND", full: "North Dakota" },
-    { name: "NE", full: "Nebraska" },
-    { name: "NH", full: "New Hampshire" },
-    { name: "NJ", full: "New Jersey" },
-    { name: "NM", full: "New Mexico" },
-    { name: "NV", full: "Nevada" },
-    { name: "NY", full: "New York" },
-    { name: "OH", full: "Ohio" },
-    { name: "OK", full: "Oklahoma" },
-    { name: "OR", full: "Oregon" },
-    { name: "PA", full: "Pennsylvania" },
-    { name: "RI", full: "Rhode Island" },
-    { name: "SC", full: "South Carolina" },
-    { name: "SD", full: "South Dakota" },
-    { name: "TN", full: "Tennessee" },
-    { name: "TX", full: "Texas" },
-    { name: "UT", full: "Utah" },
-    { name: "VA", full: "Virginia" },
-    { name: "VT", full: "Vermont" },
-    { name: "WA", full: "Washington" },
-    { name: "WI", full: "Wisconsin" },
-    { name: "WV", full: "West Virginia" },
-    { name: "WY", full: "Wyoming" },
-    { name: "PR", full: "Puerto Rico" },
-    { name: "AS", full: "American Samoa" },
-    { name: "GU", full: "Guam" },
-    { name: "MP", full: "Northern Mariana Islands" },
-    { name: "VI", full: "U.S. Virgin Islands" }
-  ];
-
