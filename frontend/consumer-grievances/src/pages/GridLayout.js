@@ -93,6 +93,7 @@ const renderContent = (loading, searchedState, totalComplaints, complaintCategor
   <Grid item container justify="center" spacing={2} direction={"row"}>
     <Grid xs={12} md={6}>
       <DataCard
+        type={"finance"}
         data={totalComplaints}
         m={2}
         title={"Complaints / 1000"}
@@ -114,10 +115,10 @@ const renderContent = (loading, searchedState, totalComplaints, complaintCategor
 
   <Grid item container spacing={2} direction={"row"}>
     <Grid xs={12} md={6}>
-      <DataCard data={totalCalls} m={2} subtitle={"in 2020"} title={"Total complaints"} />
+      <DataCard type={"totalRobocalls"} data={totalCalls} m={2} subtitle={"in 2020"} title={"Total complaints"} />
     </Grid>
     <Grid xs={12} md={6}>
-      <DataCard data={callsPer1000} subtitle={"per thousand inhabitants in 2020"} title={"Complaints / 1000"} />
+      <DataCard type={"robocalls"} data={callsPer1000} subtitle={"per thousand inhabitants in 2020"} title={"Complaints / 1000"} />
     </Grid>
   </Grid>
 </Paper>

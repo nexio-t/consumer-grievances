@@ -5,6 +5,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { colorDataRange } from '../helpers/CleanData'; 
 
 const useStyles = makeStyles({
   root: {
@@ -25,15 +26,19 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DataCard({title, subtitle, state, data}) {
+export default function DataCard({type, title, subtitle, state, data}) {
   
   const classes = useStyles();
   let displayData = data 
+  let color; 
 
+  color = colorDataRange(type, data)
   if (data > 999) displayData = data.toLocaleString()
+  
+  console.log("DataCard color is: ", color); 
 
   return (
-    <Card variant="outlined" className={classes.root}>
+    <Card style={{backgroundColor: color}} variant="outlined" className={classes.root}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           {state}
