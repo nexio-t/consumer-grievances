@@ -2,7 +2,6 @@
 // eslint-disable-next-line
 import { useState, useEffect, useRef } from "react";
 import Box from "@material-ui/core/Box";
-import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -16,7 +15,7 @@ import ConsumerGrievances from "../assets/ConsumerGrievances_copy.png";
 import LoadingBar from "../components/LoadingBar";
 import { findStatePopulation, convertToThousands } from "../helpers/CleanData";
 import { fullStateNames } from "../data/data";
-import api from "../api/api"; 
+import api from "../api/api";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -62,7 +61,7 @@ const renderContent = (
       </Grid>
     );
   }
-
+  // you can implemenet ternarys here based on the general errors below
   return (
     <div>
       <Grid item xs={12}>
@@ -184,18 +183,9 @@ const searchState2 = async (
   settotalCalls
 ) => {
   try {
-    const fetchPopData = await api.getPopulationData(); 
-    let statePopulation;
-    if (fetchPopData["status"] === 200) {
-      const {
-        data: { data },
-      } = fetchPopData;
-      statePopulation = await findStatePopulation(data, searchedState);
-    }
 
-    const fetchRobocalls = await api.getRobocallData(searchedState) 
-
-    let abbr = "";
+    let statePopulation = null;
+    let abbr;
 
     fullStateNames.map((state) => {
       for (const x in state) {
@@ -203,10 +193,23 @@ const searchState2 = async (
       }
     });
 
-    
-    const fetchConsumerComplaints = await api.getConsumerComplaintData(abbr) 
+    const [fetchPopData, fetchRobocalls, fetchConsumerComplaints] = await Promise.all([
+      api.getPopulationData(),
+      api.getRobocallData(searchedState),
+      api.getConsumerComplaintData(abbr)
+    ]);
 
-    if (fetchConsumerComplaints["status"] === 200) {
+    if (fetchPopData["status"] === 200) {
+      const {
+        data: { data },
+      } = fetchPopData;
+      statePopulation = await findStatePopulation(data, searchedState);
+    } else {
+      console.log("TO DO: SET GENERAL ERROR HERE");
+    }
+
+    // TODO: statePopulation is optional here, if request didn't fail then potentially still go through consumer complaints 
+    if (fetchConsumerComplaints["status"] === 200 && statePopulation !== null) {
       const {
         data: {
           aggregations: {
@@ -228,15 +231,18 @@ const searchState2 = async (
 
       if (doc_count && buckets) {
         setcomplaintCategories(buckets);
+        // Rename this variable
         settotalComplaints(convertedData);
         setLoading(false);
       } else {
         setLoading(false);
         console.log("no data to display for fetchConsumer complaints");
       }
+    } else {
+      console.log("SET CONSUMER COMPLAINTS ERROR");
     }
 
-    if (fetchRobocalls["status"] === 200) {
+    if (fetchRobocalls["status"] === 200 && statePopulation !== null) {
       const totalRobocalls = fetchRobocalls.data.meta["record-total"];
       const callsPerThousand = convertToThousands(
         totalRobocalls,
@@ -250,11 +256,11 @@ const searchState2 = async (
       }
     } else {
       setLoading(false);
-      console.log("no data to display for robocalls");
+      console.log("SET ROBOCALLS ERROR");
     }
   } catch (err) {
     console.log("request error is: ", err);
-    throw new Error();
+    console.error(err);
   }
 };
 
@@ -290,9 +296,10 @@ export default function GridLayout() {
     setsearchedState(inputValue);
   };
 
+  // Export the container and hideAppBar for the page and rename this to homepage
   return (
     <Container>
-      <HideAppBar></HideAppBar>
+      <HideAppBar />
       <Grid container direction="column" alignItems="center" justify="center">
         <Paper justify="center" className={classes.image} variant="outlined">
           <img width={"100%"} src={ConsumerGrievances} />
@@ -311,14 +318,14 @@ export default function GridLayout() {
         </Grid>
         {searchedState
           ? renderContent(
-              loading,
-              searchedState,
-              totalComplaints,
-              complaintCategories,
-              totalCalls,
-              callsPer1000,
-              classes
-            )
+            loading,
+            searchedState,
+            totalComplaints,
+            complaintCategories,
+            totalCalls,
+            callsPer1000,
+            classes
+          )
           : null}
       </Grid>
     </Container>

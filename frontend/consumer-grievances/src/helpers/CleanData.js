@@ -9,12 +9,12 @@ export const colorDataRange = (type, data) => {
   let num;
   if (type === "finance") {
     num = parseFloat(data);
-    if (num < 0.6) return (color = colorKey["low"]);
+    if (num < 0.8) return (color = colorKey["low"]);
     if (num < 1.4) return (color = colorKey["moderate"]);
     else return (color = colorKey["high"]);
   } else if (type === "robocalls") {
     num = parseFloat(data);
-    if (num < 10) return (color = colorKey["low"]);
+    if (num < 11) return (color = colorKey["low"]);
     if (num < 14) return (color = colorKey["moderate"]);
     if (num >= 14) return (color = colorKey["high"]);
   } else if (type === "totalRobocalls") {
