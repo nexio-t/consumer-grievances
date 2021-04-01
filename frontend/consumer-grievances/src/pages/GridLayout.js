@@ -1,6 +1,6 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Box from "@material-ui/core/Box";
 import axios from "axios";
 import { makeStyles } from "@material-ui/core/styles";
@@ -16,6 +16,7 @@ import ConsumerGrievances from "../assets/ConsumerGrievances_copy.png";
 import LoadingBar from "../components/LoadingBar";
 import { findStatePopulation, convertToThousands } from "../helpers/CleanData";
 import { fullStateNames } from "../data/data";
+import api from "../api/api"; 
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -174,10 +175,16 @@ const renderContent = (
   );
 };
 
-const searchState2 = async (searchedState, setcomplaintCategories, settotalComplaints, setLoading, setcallsPer1000, settotalCalls) => {
-  
+const searchState2 = async (
+  searchedState,
+  setcomplaintCategories,
+  settotalComplaints,
+  setLoading,
+  setcallsPer1000,
+  settotalCalls
+) => {
   try {
-    const fetchPopData = await axios.get("/fetchPopulationData");
+    const fetchPopData = await api.getPopulationData(); 
     let statePopulation;
     if (fetchPopData["status"] === 200) {
       const {
@@ -186,21 +193,18 @@ const searchState2 = async (searchedState, setcomplaintCategories, settotalCompl
       statePopulation = await findStatePopulation(data, searchedState);
     }
 
-    const fetchRobocalls = await axios.get(
-      `/fetchRobocallComplaints/${searchedState}`
-    );
+    const fetchRobocalls = await api.getRobocallData(searchedState) 
 
     let abbr = "";
-    
+
     fullStateNames.map((state) => {
       for (const x in state) {
         if (state[x] === searchedState) return (abbr = state["abbr"]);
       }
     });
 
-    const fetchConsumerComplaints = await axios.get(
-      `/fetchConsumerComplaints/${abbr}`
-    );
+    
+    const fetchConsumerComplaints = await api.getConsumerComplaintData(abbr) 
 
     if (fetchConsumerComplaints["status"] === 200) {
       const {
@@ -252,38 +256,39 @@ const searchState2 = async (searchedState, setcomplaintCategories, settotalCompl
     console.log("request error is: ", err);
     throw new Error();
   }
-
-}
+};
 
 export default function GridLayout() {
   const classes = useStyles();
-
-  const [searchedState, setsearchedState] = React.useState("");
-  const [callsPer1000, setcallsPer1000] = React.useState(0);
-  const [totalCalls, settotalCalls] = React.useState(0);
-  const [totalComplaints, settotalComplaints] = React.useState([]);
-  const [complaintCategories, setcomplaintCategories] = React.useState([]);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [errorMsg, setErrorMsg] = React.useState("");
-
-
+  const [searchedState, setsearchedState] = useState("");
+  const [callsPer1000, setcallsPer1000] = useState(0);
+  const [totalCalls, settotalCalls] = useState(0);
+  const [totalComplaints, settotalComplaints] = useState([]);
+  const [complaintCategories, setcomplaintCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
   const isInitialMount = useRef(true);
 
-useEffect(() => {
-  if (isInitialMount.current) {
-     isInitialMount.current = false;
-  } else {
-    searchState2(searchedState, setcomplaintCategories, settotalComplaints, setLoading, setcallsPer1000, settotalCalls); 
-  }
-}, [searchedState]);
+  useEffect(() => {
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      searchState2(
+        searchedState,
+        setcomplaintCategories,
+        settotalComplaints,
+        setLoading,
+        setcallsPer1000,
+        settotalCalls
+      );
+    }
+  }, [searchedState]);
 
   const searchState = async (inputValue) => {
     setLoading(true);
     setsearchedState(inputValue);
   };
-
- 
 
   return (
     <Container>
