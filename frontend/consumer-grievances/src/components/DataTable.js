@@ -14,7 +14,7 @@ const StyledTableCell = withStyles((theme) => ({
     color: theme.palette.common.black,
   },
   body: {
-    fontSize: 14,
+    fontSize: 15,
   },
 }))(TableCell);
 
@@ -29,7 +29,20 @@ const StyledTableRow = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     margin: '10px',
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 50,
+    fontWeight: 800
   },
+  tableTitle: {
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 18,
+    fontWeight: 800
+  },
+  // tableRow: {
+  //   // fontFamily: "'Oswald', sans-serif;",
+  //   fontSize: 12,
+  //   fontWeight: 300
+  // },
 });
 
 export default function DataTable({data}) {
@@ -53,15 +66,15 @@ export default function DataTable({data}) {
     <TableContainer component={Paper}>
       <Table className={classes.table} size="small" aria-label="a dense table">
         <TableHead>
-          <TableRow>
-            <StyledTableCell>Complaint Category</StyledTableCell>
-            <StyledTableCell align="right">Total</StyledTableCell>
+          <TableRow  >
+            <StyledTableCell className={classes.tableTitle}>Complaint Category</StyledTableCell>
+            <StyledTableCell className={classes.tableTitle}  align="right">Total</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {formattedTableData.map((row) => (
             <TableRow key={row.key}>
-              <TableCell component="th" scope="row">
+              <TableCell  className={classes.tableRow}  component="th" scope="row">
                 {row.key}
               </TableCell>
               <TableCell align="right">{row.doc_count}</TableCell>

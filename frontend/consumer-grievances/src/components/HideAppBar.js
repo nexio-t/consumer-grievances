@@ -8,6 +8,8 @@ import useScrollTrigger from '@material-ui/core/useScrollTrigger';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Slide from '@material-ui/core/Slide';
+import { makeStyles } from "@material-ui/core/styles";
+
 
 function HideOnScroll(props) {
   const { children, window } = props;
@@ -23,23 +25,23 @@ function HideOnScroll(props) {
   );
 }
 
-HideOnScroll.propTypes = {
-  children: PropTypes.element.isRequired,
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
-};
+const useStyles = makeStyles((theme) => ({
+  siteTitle: {
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 25,
+    fontWeight: 500
+  }
+}));
 
 export default function HideAppBar(props) {
+  const classes = useStyles();
   return (
     <React.Fragment>
       <CssBaseline />
       <HideOnScroll {...props}>
         <AppBar>
           <Toolbar>
-            <Typography variant="h6">Find out where your state stands</Typography>
+            <Typography className={classes.siteTitle} variant="h6">Find out where your state stands</Typography>
           </Toolbar>
         </AppBar>
       </HideOnScroll>
