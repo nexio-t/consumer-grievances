@@ -18,11 +18,26 @@ const useStyles = makeStyles({
     margin: '0 2px',
     transform: 'scale(0.8)',
   },
-  title: {
-    fontSize: 14,
-  },
   pos: {
     marginBottom: 12,
+  },
+  title: {
+    marginTop: "20px",
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 25,
+    fontWeight: 500
+  },
+  subtitle: {
+    marginBottom: "20px",
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 50,
+    fontWeight: 500
+  },
+  data: {
+    marginBottom: "20px",
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 50,
+    fontWeight: 800
   },
 });
 
@@ -44,7 +59,7 @@ export default function DataCard({type, title, subtitle, state, data}) {
           {state}
         </Typography>
 
-        <Typography variant="h5" component="h2">
+        <Typography className={classes.title} variant="h5" component="h2">
           {title}
         </Typography>
 
@@ -55,7 +70,7 @@ export default function DataCard({type, title, subtitle, state, data}) {
         
         <Typography className={classes.pos} color="textSecondary">
         </Typography>
-        <Typography variant="h3" component="p">
+        <Typography className={classes.data} variant="h3" component="p">
           {displayData}
         </Typography>
       </CardContent>

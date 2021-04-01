@@ -7,7 +7,6 @@ const colorKey = {
 export const colorDataRange = (type, data) => {
   let color;
   let num;
-
   if (type === "finance") {
     num = parseFloat(data);
     if (num < 0.6) return (color = colorKey["low"]);
@@ -25,7 +24,23 @@ export const colorDataRange = (type, data) => {
     if (num < 100000) return (color = colorKey["moderate"]);
     if (num >= 100000) return (color = colorKey["high"]);
   }
+};
 
-  console.log("color right before return is: ", color);
-  return color;
+export const convertToThousands = (total, statePopulation) => {
+  const dataPerThousand = (total / (statePopulation / 1000)).toFixed(1);
+  return dataPerThousand;
+};
+
+export const findStatePopulation = async (data, inputValue) => {
+  let statePopulation = null;
+  await data.map((stateData) => {
+    for (const x in stateData) {
+      if (x === "State") {
+        if (stateData[x].toLowerCase() === inputValue.toLowerCase()) {
+          return (statePopulation = stateData["Population"]);
+        }
+      }
+    }
+  });
+  return statePopulation;
 };
