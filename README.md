@@ -23,9 +23,9 @@ You can access the backend repo [here](https://github.com/nexio-t/consumer-griev
 ## Demo 
 You can see a gif demonstrating functionality here:
 
-![Consumer Grievances Home Page]('../frontend/consumer-grievances/public/consumergrievances.gif');
+![Consumer Grievances Home Page]('./frontend/consumer-grievances/public/consumergrievances.gif');
 
-![Consumer Grievances Home Page]('../frontend/consumer-grievances/public/grievanceshomepage.png');
+![Consumer Grievances Home Page]('./frontend/public/grievanceshomepage.png');
 
 ## Deployed versions
 You can access the deployed version of the backend here. 
