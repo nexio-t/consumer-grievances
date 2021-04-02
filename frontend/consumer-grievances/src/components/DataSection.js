@@ -40,7 +40,7 @@ export default function DataSection({
         {SectionTitle}
       </Typography>
       <Grid item container direction={"row"}>
-        <Grid xs={12} md={6}>
+        <Grid item xs={12} md={6}>
           <DataCard
             type={typeOne}
             data={cardDataOne}
@@ -49,7 +49,7 @@ export default function DataSection({
             title={cardTitleOne}
           />
         </Grid>
-        <Grid xs={12} md={6}>
+        <Grid item xs={12} md={6}>
           {tableData ? (
             <DataTable data={tableData} />
           ) : (

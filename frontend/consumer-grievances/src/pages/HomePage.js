@@ -59,7 +59,7 @@ const renderContent = (
   
   if (loading) {
     return (
-      <Grid item xs={10} md={8} lg={6}>
+      <Grid item xs={8} md={8} lg={8}>
         <LoadingBar></LoadingBar>
       </Grid>
     );
@@ -171,8 +171,8 @@ const fetchStateData = async (
     let statePopulation = null;
     let abbr;
 
-    if (searchedState === undefined) return setLoading(false);
-
+    if (searchedState === undefined) return;
+    
     fullStateNames.map((state) => {
       for (const x in state) {
         if (state[x] === searchedState) return (abbr = state["abbr"]);
