@@ -23,14 +23,14 @@ You can access the backend repo [here](https://github.com/nexio-t/consumer-griev
 ## Demo 
 You can see a gif demonstrating functionality here:
 
-![Consumer Grievances Home Page]('./frontend/consumer-grievances/public/consumergrievances.gif');
+![Consumer Grievances Home Page]('https://github.com/nexio-t/consumer-grievances/blob/main/frontend/consumer-grievances/public/consumergrievances.gif?raw=true')
 
-![Consumer Grievances Home Page]('./frontend/public/grievanceshomepage.png');
+![Consumer Grievances Home Page]('https://github.com/nexio-t/consumer-grievances/blob/main/frontend/consumer-grievances/public/grievanceshomepage.png?raw=true')
 
 ## Deployed versions
-You can access the deployed version of the backend here. 
+You can access the deployed version of the backend [here](https://consumer-grievances-backend.herokuapp.com/). 
 
-You can access the backend repo here, and a deployed version here.
+You can access the backend repo here, and a deployed version [here](https://github.com/nexio-t/consumer-grievances-backend).
 
 ## Areas of further development 
 * Adding TypeScript interfaces to validate data structures and types
