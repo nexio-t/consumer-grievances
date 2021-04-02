@@ -18,7 +18,6 @@ export const colorDataRange = (type, data) => {
     if (num < 14) return (color = colorKey["moderate"]);
     if (num >= 14) return (color = colorKey["high"]);
   } else if (type === "totalRobocalls") {
-    console.log("in totalRobocalls is: "); 
     num = parseInt(data);
     if (num < 20000) return (color = colorKey["low"]);
     if (num < 100000) return (color = colorKey["moderate"]);

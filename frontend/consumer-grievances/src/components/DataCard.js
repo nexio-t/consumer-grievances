@@ -1,9 +1,7 @@
-import React from 'react';
+// import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { colorDataRange } from '../helpers/CleanData'; 
 
@@ -50,8 +48,6 @@ export default function DataCard({type, title, subtitle, state, data}) {
   color = colorDataRange(type, data)
   if (data > 999) displayData = data.toLocaleString()
   
-  console.log("DataCard color is: ", color); 
-
   return (
     <Card style={{backgroundColor: color}} variant="outlined" className={classes.root}>
       <CardContent>

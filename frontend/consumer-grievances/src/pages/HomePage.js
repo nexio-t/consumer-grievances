@@ -54,6 +54,7 @@ const renderContent = (
   callsPer1000,
   classes
 ) => {
+  console.log('renderContent called'); 
   if (loading) {
     return (
       <Grid item xs={10} md={8} lg={6}>
@@ -65,7 +66,7 @@ const renderContent = (
   return (
     <div>
       <Grid item xs={12}>
-        <Grid item container justify="center" spacing={1} direction={"row"}>
+        <Grid item container justify="center" direction={"row"}>
           <Typography
             className={classes.typography}
             variant="h5"
@@ -75,13 +76,17 @@ const renderContent = (
             {searchedState}'s Report Card
           </Typography>
         </Grid>
+{/* 
+        {generalError
+          ? <div>General Error</div>
+          : null} */}
 
         <Paper className={classes.paper}>
           <Typography className={classes.cardTitle} variant="h5" gutterBottom>
             Financial Consumer Complaints
           </Typography>
 
-          <Grid item container justify="center" spacing={2} direction={"row"}>
+          <Grid item container justify="center" direction={"row"}>
             <Grid xs={12} md={6}>
               <DataCard
                 type={"finance"}
@@ -104,7 +109,7 @@ const renderContent = (
             Robocall Complaints
           </Typography>
 
-          <Grid item container spacing={2} direction={"row"}>
+          <Grid item container direction={"row"}>
             <Grid xs={12} md={6}>
               <DataCard
                 type={"totalRobocalls"}
@@ -130,7 +135,6 @@ const renderContent = (
           style={{ marginBottom: "50px" }}
           item
           container
-          spacing={2}
           direction={"row"}
         >
           <div>
@@ -174,7 +178,7 @@ const renderContent = (
   );
 };
 
-const searchState2 = async (
+const fetchStateData = async (
   searchedState,
   setcomplaintCategories,
   settotalComplaints,
@@ -186,6 +190,9 @@ const searchState2 = async (
 
     let statePopulation = null;
     let abbr;
+    
+
+    if (searchedState === undefined) return setLoading(false);  
 
     fullStateNames.map((state) => {
       for (const x in state) {
@@ -199,6 +206,8 @@ const searchState2 = async (
       api.getConsumerComplaintData(abbr)
     ]);
 
+    console.log("fetchPopData is: ", fetchPopData); 
+    // if (true )
     if (fetchPopData["status"] === 200) {
       const {
         data: { data },
@@ -206,6 +215,7 @@ const searchState2 = async (
       statePopulation = await findStatePopulation(data, searchedState);
     } else {
       console.log("TO DO: SET GENERAL ERROR HERE");
+      setLoading(false) 
     }
 
     // TODO: statePopulation is optional here, if request didn't fail then potentially still go through consumer complaints 
@@ -272,7 +282,7 @@ export default function GridLayout() {
   const [totalComplaints, settotalComplaints] = useState([]);
   const [complaintCategories, setcomplaintCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  // const [generalError, setgeneralError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const isInitialMount = useRef(true);
 
@@ -280,7 +290,7 @@ export default function GridLayout() {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      searchState2(
+      fetchStateData(
         searchedState,
         setcomplaintCategories,
         settotalComplaints,
@@ -296,17 +306,16 @@ export default function GridLayout() {
     setsearchedState(inputValue);
   };
 
-  // Export the container and hideAppBar for the page and rename this to homepage
   return (
     <Container>
       <HideAppBar />
       <Grid container direction="column" alignItems="center" justify="center">
         <Paper justify="center" className={classes.image} variant="outlined">
-          <img width={"100%"} src={ConsumerGrievances} />
+          <img width={"100%"} src={ConsumerGrievances} alt="logo of consumer grievances" />
         </Paper>
       </Grid>
 
-      <Grid justify="center" container spacing={4}>
+      <Grid justify="center" container >
         <Grid item xs={10} md={8} lg={6}>
           <Paper className={classes.paper}>
             <SearchInput
