@@ -17,11 +17,9 @@ const useStyles = makeStyles(() => ({
 export default function SearchInput({ searchState, fullOptions }) {
   const [inputValue, setInputValue] = useState("");
   const [options, setOptions] = useState([]);
-  const [value, setValue] = useState(null);
 
   const onChange = (event, newValue) => {
     setOptions(newValue ? [newValue, ...options] : options);
-    setValue(newValue);
   };
 
   const onInputChange = (event, newInputValue) => {

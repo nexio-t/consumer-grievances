@@ -3,6 +3,8 @@ import Grid from "@material-ui/core/Grid";
 import DataCard from "./DataCard";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import DataTable from "./DataTable";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -19,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }));
 
-export default function DataSection({SectionTitle, typeOne, typeTwo, cardDataOne, cardDataTwo, subTitleOne, subTitleTwo, cardTitleOne, cardTitleTwo}) { 
+export default function DataSection({SectionTitle, typeOne, typeTwo, cardDataOne, cardDataTwo, subTitleOne, subTitleTwo, cardTitleOne, cardTitleTwo, tableData}) { 
     const classes = useStyles();
 
 return ( <Paper className={classes.paper}>
@@ -38,12 +40,17 @@ return ( <Paper className={classes.paper}>
         />
       </Grid>
       <Grid xs={12} md={6}>
-        <DataCard
+
+          {(tableData) ? 
+           <DataTable data={tableData} />
+          : <DataCard
           type={typeTwo}
           data={cardDataTwo}
           subtitle={subTitleTwo}
           title={cardTitleTwo}
         />
+        }
+        
       </Grid>
     </Grid>
   </Paper>  )

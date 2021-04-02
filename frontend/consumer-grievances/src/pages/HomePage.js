@@ -1,15 +1,12 @@
 /* eslint-disable no-use-before-define */
 // eslint-disable-next-line
 import { useState, useEffect, useRef } from "react";
-import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import SearchInput from "../components/SearchInput";
-import DataCard from "../components/DataCard";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
-import DataTable from "../components/DataTable";
 import HideAppBar from "../components/HideAppBar";
 import ConsumerGrievances from "../assets/ConsumerGrievances_copy.png";
 import LoadingBar from "../components/LoadingBar";
@@ -45,12 +42,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 25,
     fontWeight: 500,
   },
-  cardTitle: {
-    marginBottom: "20px",
-    fontFamily: "'Oswald', sans-serif;",
-    fontSize: 30,
-    fontWeight: 500,
-  },
 }));
 
 const renderContent = (
@@ -65,7 +56,7 @@ const renderContent = (
   callsPer1000,
   classes
 ) => {
-  console.log("renderContent called");
+  
   if (loading) {
     return (
       <Grid item xs={10} md={8} lg={6}>
@@ -87,7 +78,6 @@ const renderContent = (
       >
         <Typography
           className={classes.error}
-          // variant="body1"
           gutterBottom
           direction={"row"}
         >
@@ -97,7 +87,7 @@ const renderContent = (
       </Grid>
     );
   }
-  // you can implemenet ternarys here based on the general errors below
+  
   return (
     <div>
       <Grid item xs={12}>
@@ -116,7 +106,6 @@ const renderContent = (
           <Grid container justify="center" direction={"row"} item>
             <Typography
               className={classes.error}
-              // variant="body1"
               gutterBottom
               direction={"row"}
             >
@@ -124,35 +113,20 @@ const renderContent = (
               Robocall complaints are still available though!
             </Typography>
           </Grid>
-        ) : (
-          <Paper className={classes.paper}>
-            <Typography className={classes.cardTitle} variant="h5" gutterBottom>
-              Financial Consumer Complaints
-            </Typography>
-
-            <Grid item container justify="center" direction={"row"}>
-              <Grid xs={12} md={6}>
-                <DataCard
-                  type={"finance"}
-                  data={totalComplaints}
-                  m={2}
-                  title={"Complaints / 1000"}
-                  subtitle={"per thousand inhabitants in 2020"}
-                />
-              </Grid>
-
-              <Grid xs={12} md={6}>
-                <DataTable data={complaintCategories} />
-              </Grid>
-            </Grid>
-          </Paper>
+        ) : (          <DataSection
+              SectionTitle={"Financial Consumer Complaints"}
+              typeOne={"finance"}
+              cardDataOne={totalComplaints}
+              subTitleOne={"per thousand inhabitants in 2020"}
+              cardTitleOne={"Complaints / 1000"}
+              tableData={complaintCategories}
+          />
         )}
 
         {generalError3 ? (
           <Grid container justify="center" direction={"row"} item>
             <Typography
               className={classes.error}
-              // variant="body1"
               gutterBottom
               direction={"row"}
             >
@@ -171,6 +145,7 @@ const renderContent = (
             subTitleTwo={"per thousand inhabitants in 2020"}
             cardTitleOne={"Total complaints"}
             cardTitleTwo={"Complaints / 1000"}
+            tableData={null}
           />
         )}
       </Grid>
@@ -214,9 +189,8 @@ const fetchStateData = async (
       api.getConsumerComplaintData(abbr),
     ]);
 
-    // if (false) {
     if (fetchPopData["status"] === 200) {
-      console.log("in conditional");
+      
       const {
         data: { data },
       } = fetchPopData;
@@ -225,7 +199,6 @@ const fetchStateData = async (
       setgeneralError(true);
     }
 
-    // TODO: statePopulation is optional here, if request didn't fail then potentially still go through consumer complaints
     if (fetchConsumerComplaints["status"] === 200 && statePopulation !== null) {
       const {
         data: {
@@ -255,11 +228,8 @@ const fetchStateData = async (
       } else {
         setgeneralError2(true);
         setLoading(false);
-        console.log("no data to display for fetchConsumer complaints");
       }
-    } else {
-      console.log("SET CONSUMER COMPLAINTS ERROR");
-    }
+    } 
 
     if (fetchRobocalls["status"] === 200 && statePopulation !== null) {
       const totalRobocalls = fetchRobocalls.data.meta["record-total"];
@@ -268,7 +238,6 @@ const fetchStateData = async (
         statePopulation
       );
 
-      // if (false) {
       if (callsPerThousand && totalRobocalls) {
         setcallsPer1000(callsPerThousand);
         settotalCalls(totalRobocalls);
@@ -276,14 +245,11 @@ const fetchStateData = async (
       } else {
         setgeneralError3(true);
         setLoading(false);
-        console.log("no data to display for fetchConsumer complaints");
       }
     } else {
       setLoading(false);
-      console.log("SET ROBOCALLS ERROR");
     }
   } catch (err) {
-    console.log("request error is: ", err);
     console.error(err);
   }
 };
@@ -299,7 +265,6 @@ export default function GridLayout() {
   const [generalError, setgeneralError] = useState(false);
   const [generalError2, setgeneralError2] = useState(false);
   const [generalError3, setgeneralError3] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
   const isInitialMount = useRef(true);
 
   useEffect(() => {
