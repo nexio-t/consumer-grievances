@@ -39,7 +39,6 @@ export default function DataSection({
       <Typography className={classes.cardTitle} variant="h5" gutterBottom>
         {SectionTitle}
       </Typography>
-
       <Grid item container direction={"row"}>
         <Grid xs={12} md={6}>
           <DataCard

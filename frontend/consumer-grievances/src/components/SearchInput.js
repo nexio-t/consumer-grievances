@@ -1,5 +1,3 @@
-/* eslint-disable no-use-before-define */
-// eslint-disable-next-line
 import { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";

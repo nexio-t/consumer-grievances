@@ -190,7 +190,6 @@ const fetchStateData = async (
     ]);
 
     if (fetchPopData["status"] === 200) {
-      
       const {
         data: { data },
       } = fetchPopData;
@@ -219,10 +218,8 @@ const fetchStateData = async (
 
       const convertedData = convertToThousands(doc_count, statePopulation);
 
-      // if (false) {
       if (doc_count && buckets) {
         setcomplaintCategories(buckets);
-        // Rename this variable
         settotalComplaints(convertedData);
         setLoading(false);
       } else {
