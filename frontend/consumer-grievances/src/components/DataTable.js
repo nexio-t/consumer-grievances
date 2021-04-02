@@ -1,4 +1,3 @@
-import React from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -18,14 +17,6 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
-  },
-}))(TableRow);
-
 const useStyles = makeStyles({
   table: {
     margin: '10px',
@@ -37,28 +28,14 @@ const useStyles = makeStyles({
     fontFamily: "'Oswald', sans-serif;",
     fontSize: 18,
     fontWeight: 800
-  },
-  // tableRow: {
-  //   // fontFamily: "'Oswald', sans-serif;",
-  //   fontSize: 12,
-  //   fontWeight: 300
-  // },
+  }
 });
 
 export default function DataTable({data}) {
 
-
-
-  console.log("DataTables data is: ", data); 
-
-//   createTableRows(data); 
-
-//   console.log("rows? is: ", rows);
-
   const formattedTableData = data.map(item => { 
       return {...item, doc_count: item.doc_count.toLocaleString()}
     }); 
-  console.log("formmattedTableData is: ", formattedTableData); 
 
   const classes = useStyles();
 
@@ -78,7 +55,6 @@ export default function DataTable({data}) {
                 {row.key}
               </TableCell>
               <TableCell align="right">{row.doc_count}</TableCell>
-    
             </TableRow>
           ))}
         </TableBody>

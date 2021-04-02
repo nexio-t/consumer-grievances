@@ -1,12 +1,11 @@
 import './App.css';
-import GridLayout from './pages/GridLayout'; 
+import HomePage from './pages/HomePage'; 
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-
-        <GridLayout/>
+        <HomePage/>
       </header>
     </div>
   );

@@ -1,28 +1,22 @@
-/* eslint-disable no-use-before-define */
-// eslint-disable-next-line
-import React, { useState } from "react";
+import { useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Button from "@material-ui/core/Button";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   button: {
     padding: "10px",
   },
 }));
 
 export default function SearchInput({ searchState, fullOptions }) {
-  const [inputValue, setInputValue] = React.useState("");
-  const [options, setOptions] = React.useState([]);
-  const [value, setValue] = React.useState(null);
+  const [inputValue, setInputValue] = useState("");
+  const [options, setOptions] = useState([]);
 
   const onChange = (event, newValue) => {
-    console.log("newValue is: ", newValue);
     setOptions(newValue ? [newValue, ...options] : options);
-    setValue(newValue);
   };
 
   const onInputChange = (event, newInputValue) => {
@@ -40,14 +34,8 @@ export default function SearchInput({ searchState, fullOptions }) {
           id="combo-box-demo"
           options={fullOptions}
           getOptionLabel={(option) => option.full}
-          onChange={(event, newValue) => {
-            console.log("newValue is: ", newValue);
-            setOptions(newValue ? [newValue, ...options] : options);
-            setValue(newValue);
-          }}
-          onInputChange={(event, newInputValue) => {
-            setInputValue(newInputValue);
-          }}
+          onChange={onChange}
+          onInputChange={onInputChange}
           renderInput={(params) => (
             <TextField {...params} label="Select State" variant="outlined" />
           )}
