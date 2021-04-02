@@ -56,7 +56,6 @@ export default function DataTable({data}) {
                 {row.key}
               </TableCell>
               <TableCell align="right">{row.doc_count}</TableCell>
-    
             </TableRow>
           ))}
         </TableBody>
