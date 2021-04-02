@@ -16,6 +16,8 @@ import LoadingBar from "../components/LoadingBar";
 import { findStatePopulation, convertToThousands } from "../helpers/CleanData";
 import { fullStateNames } from "../data/data";
 import api from "../api/api";
+import ColorKey from "../components/ColorKey";
+import DataSection from "../components/DataSection";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 40,
     fontWeight: 800,
   },
+  error: {
+    marginBottom: "20px",
+    fontFamily: "'Oswald', sans-serif;",
+    fontSize: 25,
+    fontWeight: 500,
+  },
   cardTitle: {
     marginBottom: "20px",
     fontFamily: "'Oswald', sans-serif;",
@@ -47,6 +55,9 @@ const useStyles = makeStyles((theme) => ({
 
 const renderContent = (
   loading,
+  generalError,
+  generalError2,
+  generalError3,
   searchedState,
   totalComplaints,
   complaintCategories,
@@ -54,11 +65,35 @@ const renderContent = (
   callsPer1000,
   classes
 ) => {
-  console.log('renderContent called'); 
+  console.log("renderContent called");
   if (loading) {
     return (
       <Grid item xs={10} md={8} lg={6}>
         <LoadingBar></LoadingBar>
+      </Grid>
+    );
+  }
+
+  if (generalError) {
+    return (
+      <Grid
+        container
+        justify="center"
+        direction={"row"}
+        item
+        xs={10}
+        md={8}
+        lg={6}
+      >
+        <Typography
+          className={classes.error}
+          // variant="body1"
+          gutterBottom
+          direction={"row"}
+        >
+          Uh-oh! Unable to fetch {searchedState}'s Report Card. Please try
+          again!
+        </Typography>
       </Grid>
     );
   }
@@ -76,103 +111,71 @@ const renderContent = (
             {searchedState}'s Report Card
           </Typography>
         </Grid>
-{/* 
-        {generalError
-          ? <div>General Error</div>
-          : null} */}
 
-        <Paper className={classes.paper}>
-          <Typography className={classes.cardTitle} variant="h5" gutterBottom>
-            Financial Consumer Complaints
-          </Typography>
-
-          <Grid item container justify="center" direction={"row"}>
-            <Grid xs={12} md={6}>
-              <DataCard
-                type={"finance"}
-                data={totalComplaints}
-                m={2}
-                title={"Complaints / 1000"}
-                subtitle={"per thousand inhabitants in 2020"}
-              />
-            </Grid>
-
-            <Grid xs={12} md={6}>
-              <DataTable data={complaintCategories} />
-            </Grid>
+        {generalError2 ? (
+          <Grid container justify="center" direction={"row"} item>
+            <Typography
+              className={classes.error}
+              // variant="body1"
+              gutterBottom
+              direction={"row"}
+            >
+              Uh-oh! Unable to fetch {searchedState}'s Financial Complaints.
+              Robocall complaints are still available though!
+            </Typography>
           </Grid>
-        </Paper>
+        ) : (
+          <Paper className={classes.paper}>
+            <Typography className={classes.cardTitle} variant="h5" gutterBottom>
+              Financial Consumer Complaints
+            </Typography>
+
+            <Grid item container justify="center" direction={"row"}>
+              <Grid xs={12} md={6}>
+                <DataCard
+                  type={"finance"}
+                  data={totalComplaints}
+                  m={2}
+                  title={"Complaints / 1000"}
+                  subtitle={"per thousand inhabitants in 2020"}
+                />
+              </Grid>
+
+              <Grid xs={12} md={6}>
+                <DataTable data={complaintCategories} />
+              </Grid>
+            </Grid>
+          </Paper>
+        )}
+
+        {generalError3 ? (
+          <Grid container justify="center" direction={"row"} item>
+            <Typography
+              className={classes.error}
+              // variant="body1"
+              gutterBottom
+              direction={"row"}
+            >
+              Uh-oh! Unable to fetch {searchedState}'s Robocall Complaints.
+              Financial complaints are still available though!
+            </Typography>
+          </Grid>
+        ) : (
+          <DataSection
+            SectionTitle={"Robocall Complaints"}
+            typeOne={"totalRobocalls"}
+            typeTwo={"robocalls"}
+            cardDataOne={totalCalls}
+            cardDataTwo={callsPer1000}
+            subTitleOne={"in 2020"}
+            subTitleTwo={"per thousand inhabitants in 2020"}
+            cardTitleOne={"Total complaints"}
+            cardTitleTwo={"Complaints / 1000"}
+          />
+        )}
       </Grid>
       <Grid item xs={12}>
-        <Paper className={classes.paper}>
-          <Typography className={classes.cardTitle} variant="h5" gutterBottom>
-            Robocall Complaints
-          </Typography>
-
-          <Grid item container direction={"row"}>
-            <Grid xs={12} md={6}>
-              <DataCard
-                type={"totalRobocalls"}
-                data={totalCalls}
-                m={2}
-                subtitle={"in 2020"}
-                title={"Total complaints"}
-              />
-            </Grid>
-            <Grid xs={12} md={6}>
-              <DataCard
-                type={"robocalls"}
-                data={callsPer1000}
-                subtitle={"per thousand inhabitants in 2020"}
-                title={"Complaints / 1000"}
-              />
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <Grid
-          justify="center"
-          style={{ marginBottom: "50px" }}
-          item
-          container
-          direction={"row"}
-        >
-          <div>
-            <Box
-              borderRadius={10}
-              style={{ backgroundColor: "#ffea98" }}
-              component="div"
-              display="inline"
-              p={1}
-              m={1}
-              bgcolor="background.paper"
-            >
-              Low
-            </Box>
-            <Box
-              borderRadius={10}
-              style={{ backgroundColor: "#ffb199" }}
-              component="div"
-              display="inline"
-              p={1}
-              m={1}
-              bgcolor="background.paper"
-            >
-              Moderate
-            </Box>
-            <Box
-              borderRadius={10}
-              style={{ backgroundColor: "#ff8a80" }}
-              component="div"
-              display="inline"
-              p={1}
-              m={1}
-              bgcolor="background.paper"
-            >
-              High
-            </Box>
-          </div>
-        </Grid>
+        <ColorKey />
       </Grid>
     </div>
   );
@@ -184,15 +187,16 @@ const fetchStateData = async (
   settotalComplaints,
   setLoading,
   setcallsPer1000,
-  settotalCalls
+  settotalCalls,
+  setgeneralError,
+  setgeneralError2,
+  setgeneralError3
 ) => {
   try {
-
     let statePopulation = null;
     let abbr;
-    
 
-    if (searchedState === undefined) return setLoading(false);  
+    if (searchedState === undefined) return setLoading(false);
 
     fullStateNames.map((state) => {
       for (const x in state) {
@@ -200,25 +204,28 @@ const fetchStateData = async (
       }
     });
 
-    const [fetchPopData, fetchRobocalls, fetchConsumerComplaints] = await Promise.all([
+    const [
+      fetchPopData,
+      fetchRobocalls,
+      fetchConsumerComplaints,
+    ] = await Promise.all([
       api.getPopulationData(),
       api.getRobocallData(searchedState),
-      api.getConsumerComplaintData(abbr)
+      api.getConsumerComplaintData(abbr),
     ]);
 
-    console.log("fetchPopData is: ", fetchPopData); 
-    // if (true )
+    // if (false) {
     if (fetchPopData["status"] === 200) {
+      console.log("in conditional");
       const {
         data: { data },
       } = fetchPopData;
       statePopulation = await findStatePopulation(data, searchedState);
     } else {
-      console.log("TO DO: SET GENERAL ERROR HERE");
-      setLoading(false) 
+      setgeneralError(true);
     }
 
-    // TODO: statePopulation is optional here, if request didn't fail then potentially still go through consumer complaints 
+    // TODO: statePopulation is optional here, if request didn't fail then potentially still go through consumer complaints
     if (fetchConsumerComplaints["status"] === 200 && statePopulation !== null) {
       const {
         data: {
@@ -239,12 +246,14 @@ const fetchStateData = async (
 
       const convertedData = convertToThousands(doc_count, statePopulation);
 
+      // if (false) {
       if (doc_count && buckets) {
         setcomplaintCategories(buckets);
         // Rename this variable
         settotalComplaints(convertedData);
         setLoading(false);
       } else {
+        setgeneralError2(true);
         setLoading(false);
         console.log("no data to display for fetchConsumer complaints");
       }
@@ -259,10 +268,15 @@ const fetchStateData = async (
         statePopulation
       );
 
+      // if (false) {
       if (callsPerThousand && totalRobocalls) {
         setcallsPer1000(callsPerThousand);
         settotalCalls(totalRobocalls);
         setLoading(false);
+      } else {
+        setgeneralError3(true);
+        setLoading(false);
+        console.log("no data to display for fetchConsumer complaints");
       }
     } else {
       setLoading(false);
@@ -276,13 +290,15 @@ const fetchStateData = async (
 
 export default function GridLayout() {
   const classes = useStyles();
-  const [searchedState, setsearchedState] = useState("");
+  const [searchedState, setsearchedState] = useState(null);
   const [callsPer1000, setcallsPer1000] = useState(0);
   const [totalCalls, settotalCalls] = useState(0);
   const [totalComplaints, settotalComplaints] = useState([]);
   const [complaintCategories, setcomplaintCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  // const [generalError, setgeneralError] = useState(false);
+  const [generalError, setgeneralError] = useState(false);
+  const [generalError2, setgeneralError2] = useState(false);
+  const [generalError3, setgeneralError3] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const isInitialMount = useRef(true);
 
@@ -290,14 +306,19 @@ export default function GridLayout() {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
-      fetchStateData(
-        searchedState,
-        setcomplaintCategories,
-        settotalComplaints,
-        setLoading,
-        setcallsPer1000,
-        settotalCalls
-      );
+      if (searchedState !== null) {
+        fetchStateData(
+          searchedState,
+          setcomplaintCategories,
+          settotalComplaints,
+          setLoading,
+          setcallsPer1000,
+          settotalCalls,
+          setgeneralError,
+          setgeneralError2,
+          setgeneralError3
+        );
+      }
     }
   }, [searchedState]);
 
@@ -311,11 +332,15 @@ export default function GridLayout() {
       <HideAppBar />
       <Grid container direction="column" alignItems="center" justify="center">
         <Paper justify="center" className={classes.image} variant="outlined">
-          <img width={"100%"} src={ConsumerGrievances} alt="logo of consumer grievances" />
+          <img
+            width={"100%"}
+            src={ConsumerGrievances}
+            alt="logo of consumer grievances"
+          />
         </Paper>
       </Grid>
 
-      <Grid justify="center" container >
+      <Grid justify="center" container>
         <Grid item xs={10} md={8} lg={6}>
           <Paper className={classes.paper}>
             <SearchInput
@@ -327,14 +352,17 @@ export default function GridLayout() {
         </Grid>
         {searchedState
           ? renderContent(
-            loading,
-            searchedState,
-            totalComplaints,
-            complaintCategories,
-            totalCalls,
-            callsPer1000,
-            classes
-          )
+              loading,
+              generalError,
+              generalError2,
+              generalError3,
+              searchedState,
+              totalComplaints,
+              complaintCategories,
+              totalCalls,
+              callsPer1000,
+              classes
+            )
           : null}
       </Grid>
     </Container>
