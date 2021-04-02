@@ -226,7 +226,10 @@ const fetchStateData = async (
         setgeneralError2(true);
         setLoading(false);
       }
-    } 
+    } else {
+      setgeneralError2(true);
+      setLoading(false);
+    }
 
     if (fetchRobocalls["status"] === 200 && statePopulation !== null) {
       const totalRobocalls = fetchRobocalls.data.meta["record-total"];
@@ -244,6 +247,7 @@ const fetchStateData = async (
         setLoading(false);
       }
     } else {
+      setgeneralError3(true);
       setLoading(false);
     }
   } catch (err) {
