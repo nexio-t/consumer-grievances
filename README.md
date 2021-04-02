@@ -23,9 +23,9 @@ You can access the backend repo [here](https://github.com/nexio-t/consumer-griev
 ## Demo 
 You can see a gif demonstrating functionality here:
 
-![Consumer Grievances Home Page]('https://raw.githubusercontent.com/nexio-t/consumer-grievances/main/frontend/consumer-grievances/public/consumergrievances.gif?token=AMS3UMGVE2T4JASECYSPJBTAODTPE')
+![Consumer Grievances Home Page](https://raw.githubusercontent.com/nexio-t/consumer-grievances/main/frontend/consumer-grievances/public/consumergrievances.gif?token=AMS3UMGVE2T4JASECYSPJBTAODTPE)
 
-![Consumer Grievances Home Page]('https://raw.githubusercontent.com/nexio-t/consumer-grievances/main/frontend/consumer-grievances/public/grievanceshomepage.png?token=AMS3UMDAEK5MXPHGMEURCZLAODTMU')
+![Consumer Grievances Home Page](https://raw.githubusercontent.com/nexio-t/consumer-grievances/main/frontend/consumer-grievances/public/grievanceshomepage.png?token=AMS3UMDAEK5MXPHGMEURCZLAODTMU)
 
 ## Deployed versions
 You can access the deployed version of the backend [here](https://consumer-grievances-backend.herokuapp.com/). 
