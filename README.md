@@ -44,7 +44,7 @@ You can access the backend repo here, and a deployed version [here](https://gith
 * Material UI is new to me but provides clean and customizable components. In hindsight, I may have opted to use a CSS framework like Bulma given the simplicity of the app and to optimize for speed.
 * This is a simple app, so redux would be overkill, but with additional pages and / or further requests to additional APIs, redux would be a good candidate for state management. 
 
-## Stack
+## Tech
 [Create React App](https://reactjs.org/docs/create-a-new-react-app.html)
 
 [Express](https://expressjs.com/)
