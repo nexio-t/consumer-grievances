@@ -27,7 +27,7 @@ You can see a gif demonstrating functionality here:
 
 ![Consumer Grievances Home Page](https://raw.githubusercontent.com/nexio-t/consumer-grievances/main/frontend/consumer-grievances/public/grievanceshomepage.png?token=AMS3UMDAEK5MXPHGMEURCZLAODTMU)
 
-## Areas of further development 
+## Areas for further development 
 * Adding TypeScript interfaces to validate data structures and types
 * Create a weighted-average quality-of-life score based on complaints per capita and other metrics
 * Create additional dashboards that look at complaints across other categories 
