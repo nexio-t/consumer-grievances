@@ -11,7 +11,7 @@ To run locally, navigate to the consumer-grievances sub-folder and run yarn inst
 ```bash
 cd consumer-grievances/frontend/consumer-grievances
 yarn install; yarn start
-```
+``` 
 
 If you would like to run the backend locally as well, please see the repo [here](https://github.com/nexio-t/consumer-grievances-backend) and replace all requests in the frontend with http://localhost:5000
 
